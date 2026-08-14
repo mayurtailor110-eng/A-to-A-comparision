@@ -1,0 +1,291 @@
+SR NO,Category,Parameter,Unit,COSPOWER,EVE,HITHIUM,YOUNGY ENERGY,GREAT POWER,CORNEX,Tianneng Energy,REPT,NETC,CNET - Lishen,Gotion,Remarks
+1,Commercial,Manufacturer/Model,-,COSPOWER / FP71173207A-314Ah,MB31,LFP71173207,RBA4F1,GSP71173204F,PF173 - 314A,TNS71173207B314,CB75,,,IFP72175207A-314Ah,
+2,Commercial,Manufacturer Production Capacity (314Ah),GWh,,,,,,,,,,,,
+3,Commercial,Manufacturer Plant Capacity,GWh,,,,,,,,,,,,
+4,Commercial,Company age,Years,38,25,7,28,25,5,40,9,,29,20,
+5,General,Cell Chemistry,-,LFP,LFP,LFP,LFP,LFP,LFP,LFP,LFP,LFP,LFP,LFP,
+6,General,Cell Format,-,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,Prismatic,
+7,Electrical,Nominal Voltage,V,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,
+8,Electrical,Rated Capacity,Ah,314,314,314,314,314,314,314,314,314,314,314,
+9,Electrical,Energy,Wh,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,1004.8000000000001,
+10,Electrical,Charge Cutoff voltage,V,3.65,3.65,3.65,3.65,3.65,3.65,3.65,3.65,3.65,3.65,3.65,
+11,Electrical,Discharge Cutoff voltage,V,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,
+12,Electrical,Cell RTE,%,≥ 94.5%,≥ 94.5%,≥ 94.5%,≥ 94.5%,≥ 94.5%,≥ 94.5%,≥ 94.5%,≥ 94%,≥ 94.5%,≥ 94%,≥ 94.5%,
+13,Energy Density,Gravimetric Energy Density,Wh/kg,179.42857142857144,179.42857142857144,179.42857142857144,182.69090909090912,182.69090909090912,179.42857142857144,174.74782608695654,179.42857142857144,179.42857142857144,179.42857142857144,179.42857142857144,
+14,Energy Density,Volumetric Energy Density,Wh/L,390.97276264591443,389.4573643410853,385,389.4573643410853,390.97276264591443,389.4573643410853,386.46153846153845,394.0392156862746,389.4573643410853,390.97276264591443,387.953667953668,
+15,Power,Standard Charge / Discharge Current,C rate,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,
+16,Power,Internal Resistance (ACIR),mΩ,0.17 ± 0.05,0.18 ± 0.05,0.20 ± 0.05,0.195 ± 0.035,0.2 ± 0.05,0.19±0.05mΩ,≤0.25 mΩ,≤0.3 mΩ,≤0.25 mΩ,≤ 0.22 mΩ,≤ 0.25 mΩ,
+17,Life time,Cycle Life,Cycles,"9000 cycle at
+25±2℃ 
+70%SOH","8000 cycle at
+25±2℃ 
+70%SOH","＞11000 cycle at  
+25±2℃
+ 70%SOH","≥ 9000 cycle at
+  25±2℃ 
+70%SOH","≥ 8000 cycle at
+25±2℃ 
+70%SOH","9000 cycle at
+25℃±2℃
+70%SOH","≥ 8000 cycle at
+25±2℃ 
+70%SOH","≥ 8000 cycle at
+25±2℃ 
+70%SOH","≥ 8000 cycle at
+25±2℃ 
+70%SOH","8000 cycle at
+25±2℃ 
+70%SOH","＞12000 cycle at  
+25±2℃
+ 70%SOH",
+18,Life time,Cycle life given at DoD,%,100,100,100,100,100,100,100,100,100,100,100,
+19,Life time,Service life,Years,,,12,,,12,,,,,12,Cornex submitted new data after meeting with them (Mr.jayvir visit china)
+20,Thermal,Charge Operating Temp,°C,5 ~ 60,0～ 60,0 ～ 60,0 ～ 55,0 ～ 60,0 ～ 60,0 ～ 60,0 ～ 60,0 ～ 60,0 ～ 50,0 ～ 55,EVE and Great power cell providing similar temperature operating range as HITHIUM
+21,Thermal,DisCharge Operating Temp,°C,-20 ~ 60,-30 ～ 60,-30 ～ 60,-20 ～ 55,-30 ～ 60,-20 ～ 60,-20 ～ 60,-20 ～ 60,-20 ～ 60,-20 ～ 60,-30 ～ 60,
+22,Thermal,Storage temperature,°C,-20 ~ 35,-20 ～ 35,-20～ 35,5～ 25,-10 ～ 30,"-10 ～ 30 @Storage ambient humidity ≤75% RH, no
+condensation.",-20 ～ 25,10 ～ 25,10 ～ 25,10 ～ 25,10 ～ 35,
+23,Physical,Dimensions,mm,"W- 173.8±0.5
+H - 207.2±0.5 
+T - 71.5±0.5","W - 173.7±0.5
+H - 207.2±0.5
+T - 71.70±0.8","W-174.70 ± 0.5
+H-204.47 ± 0.5 
+T-71.70 ± 0.5","W-174.3 ± 0.5 
+H- 207.1±0.5 
+T-71.6±0.5","W-173.90 ± 0.8 
+H- 206.50±0.8
+T-71.70±0.5","W-174.4 ± 0.85
+H- 207.2±0.5
+T-71.70±0.5 
+Thickness test condition: 27%SOC, pressure of
+300±20kgf","W-173.8± 1
+H- 207.2±1
+T-71.70±0.8 
+(300±20kgf)","W-174±0.8
+H- 206.8±0.8
+T-71.875±0.8","W-173.5±0.8
+H- 207.2±0.8
+T-71.8±0.8 
+(300±20kgf)","W-173.8±0.5
+H- 207.2±0.5
+T-71.5±0.8","W-174.8±0.5
+H- 207.2±0.5
+T-71.65±0.8","CP,EVE,YE and GP cells Hight dimensions is 3mm Higher then HITHIUM Cell and minor dimension change in Width and Thickness."
+24,Physical,Weight,Kg,5.60±0.3,5.60±0.3,5.60±0.3,5.5 ± 0.3,5.50 ± 0.15,5.60 ± 0.084,5.75±0.15,5.67,5.6,5.6,5.6,Weight Almost same of all brand.
+25,Compliance,Certifications,-,"UN38.3
+UL1973 
+UL9540A 
+IEC62619","GB/T 36276-2018
+IEC 62619-2022
+UL 1973-2022
+UL 9540-2019
+UN38.3-2019","GB/T 36276-2018
+IEC 62619-2022
+UL 1973-2022
+UL 9540-2019
+UN38.3-2019","GB/T 36276-2018
+UN 38.3","GB/T36276-2023
+UL9540A
+UL1973
+IEC62619
+UN38.3","GB/T36276-2023
+UL9540A
+UL1973
+IEC62619
+UN38.3",GB/T36276-2023,"GB/T36276-2023
+UL9540A
+UL1973
+IEC62619
+UN38.3","GB/T36276-2023
+UN38.3","GB/T36276-2023
+UN38.3","GB/T 36276-2018
+IEC 62619-2022
+UL 1973-2022
+UL 9540-2019
+UN38.3-2019","1. EVE only mention one certification details.
+2. GP Contains same certification as Hithium.
+3.We required UL9540A,UL1973 & IEC62619 certification details from YE.
+4. required GB/T 36276-2018 detail from CP."
+26,Supplier Status,Legal,-,MOU Signed,NDA - Signed,MSA -Under Review,Not Required,Not Required,Under Review,Rejected,NDA -Signed,Not Required,Not Required,Not Required,
+27,Supplier Status,Commercial,-,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
+28,Supplier Status,Technical,-,Pending - Technical Docs,Received - Technical Docs,Received - Technical Docs,Pending - Technical Docs,Pending - Technical Docs,Received - Technical Docs,Received - Technical Docs,Pending - Technical Docs,Pending - Technical Docs,Pending - Technical Docs,Received - Technical Docs,
+29,Efficiency vs Temp,RTE @ -20°C,%,86.9,85.8,88.0,85.5,86.7,87.2,84.8,,85.1,,87.9,
+30,Efficiency vs Temp,RTE @ -10°C,%,89.7,89.0,91.2,88.5,89.5,90.4,88.6,89.5,88.4,89.2,90.8,
+31,Efficiency vs Temp,RTE @ 0°C,%,93.3,91.9,93.6,91.5,92.5,93.6,90.9,92.5,91.6,91.7,94.2,
+32,Efficiency vs Temp,RTE @ 10°C,%,94.7,93.7,95.7,93.9,94.6,95.2,93.3,94.4,93.3,94.0,96.4,
+33,Efficiency vs Temp,RTE @ 25°C,%,96.3,95.7,97.4,95.6,96.4,96.6,95.1,95.6,94.9,95.5,97.4,
+34,Efficiency vs Temp,RTE @ 45°C,%,95.0,93.7,96.0,94.0,94.8,95.6,93.1,94.6,93.6,93.9,96.2,
+35,Capacity vs Temp,Capacity retention @ -20°C,%,82.3,81.4,83.0,80.8,81.2,82.6,80.0,81.8,80.6,80.4,83.3,
+36,Capacity vs Temp,Capacity retention @ -10°C,%,88.2,86.5,89.0,86.3,87.3,87.9,86.2,86.9,86.0,86.5,89.8,
+37,Capacity vs Temp,Capacity retention @ 0°C,%,92.6,91.9,94.1,92.0,93.0,93.7,90.7,92.2,91.1,92.0,94.9,
+38,Capacity vs Temp,Capacity retention @ 10°C,%,96.7,95.6,97.8,95.3,96.6,97.4,94.7,95.8,95.2,95.5,98.5,
+39,Capacity vs Temp,Capacity retention @ 25°C,%,100,99.1,100,98.7,99.8,99.9,98.3,99.6,98.6,98.9,100,
+40,Capacity vs Temp,Capacity retention @ 45°C,%,98.9,97.6,100,97.2,98.2,99.1,96.6,98.1,96.8,97.1,100,
+41,Power vs Temp,Cont. discharge power @ -20°C,kW,0.4,0.4,0.5,0.4,0.5,0.4,0.4,0.4,0.4,0.4,0.5,
+42,Power vs Temp,Cont. discharge power @ 0°C,kW,0.8,0.7,0.8,0.7,0.7,0.8,0.7,0.8,0.7,0.7,0.8,
+43,Power vs Temp,Cont. discharge power @ 25°C,kW,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,
+44,Power vs Temp,Cont. discharge power @ 45°C,kW,1.0,0.9,1.0,0.9,0.9,1.0,0.9,0.9,0.9,0.9,1.0,
+45,SOH Degradation,SOH @ Year 0,%,,,100.00,,,100.00,,,,,100.00,
+46,SOH Degradation,SOH @ Year 1,%,,,93.55,,,93.16,,,,,94.07,
+47,SOH Degradation,SOH @ Year 2,%,,,90.22,,,89.63,,,,,91.00,
+48,SOH Degradation,SOH @ Year 3,%,,,87.53,,,86.78,,,,,88.53,
+49,SOH Degradation,SOH @ Year 4,%,,,85.18,,,84.29,,,,,86.37,
+50,SOH Degradation,SOH @ Year 5,%,,,83.05,,,82.03,,,,,84.41,
+51,SOH Degradation,SOH @ Year 6,%,,,81.08,,,79.94,,,,,82.59,
+52,SOH Degradation,SOH @ Year 7,%,,,79.24,,,77.99,,,,,80.90,
+53,SOH Degradation,SOH @ Year 8,%,,,77.50,,,76.15,,,,,79.30,
+54,SOH Degradation,SOH @ Year 9,%,,,75.84,,,74.39,,,,,77.77,
+55,SOH Degradation,SOH @ Year 10,%,,,74.25,,,72.70,,,,,76.31,
+56,SOH Degradation,SOH @ Year 11,%,,,72.73,,,71.09,,,,,74.91,
+57,SOH Degradation,SOH @ Year 12,%,,,71.26,,,69.54,,,,,73.56,
+58,SOH Degradation,SOH @ Year 13,%,,,69.84,,,68.03,,,,,72.25,
+59,Discharge Derating,"Dis power @ -30--25°C @ [0,20%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,,0.18P,,0.22P,
+60,Discharge Derating,"Dis power @ -25--20°C @ [0,20%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+61,Discharge Derating,"Dis power @ -20--15°C @ [0,20%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+62,Discharge Derating,"Dis power @ -15--10°C @ [0,20%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+63,Discharge Derating,"Dis power @ -10--5°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+64,Discharge Derating,"Dis power @ -5-0°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+65,Discharge Derating,"Dis power @ 0-5°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+66,Discharge Derating,"Dis power @ 5-10°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+67,Discharge Derating,"Dis power @ 10-15°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+68,Discharge Derating,"Dis power @ 15-20°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+69,Discharge Derating,"Dis power @ 20-25°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+70,Discharge Derating,"Dis power @ 25-30°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+71,Discharge Derating,"Dis power @ 30-35°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+72,Discharge Derating,"Dis power @ 35-40°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+73,Discharge Derating,"Dis power @ 40-45°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+74,Discharge Derating,"Dis power @ 45-50°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+75,Discharge Derating,"Dis power @ 50-55°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+76,Discharge Derating,"Dis power @ 55-60°C @ [0,20%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+77,Discharge Derating,"Dis power @ -30--25°C @ [20,40%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,,0.18P,,0.22P,
+78,Discharge Derating,"Dis power @ -25--20°C @ [20,40%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+79,Discharge Derating,"Dis power @ -20--15°C @ [20,40%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+80,Discharge Derating,"Dis power @ -15--10°C @ [20,40%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+81,Discharge Derating,"Dis power @ -10--5°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+82,Discharge Derating,"Dis power @ -5-0°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+83,Discharge Derating,"Dis power @ 0-5°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+84,Discharge Derating,"Dis power @ 5-10°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+85,Discharge Derating,"Dis power @ 10-15°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+86,Discharge Derating,"Dis power @ 15-20°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+87,Discharge Derating,"Dis power @ 20-25°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+88,Discharge Derating,"Dis power @ 25-30°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+89,Discharge Derating,"Dis power @ 30-35°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+90,Discharge Derating,"Dis power @ 35-40°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+91,Discharge Derating,"Dis power @ 40-45°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+92,Discharge Derating,"Dis power @ 45-50°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+93,Discharge Derating,"Dis power @ 50-55°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+94,Discharge Derating,"Dis power @ 55-60°C @ [20,40%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+95,Discharge Derating,"Dis power @ -30--25°C @ [40,60%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,,0.18P,,0.22P,
+96,Discharge Derating,"Dis power @ -25--20°C @ [40,60%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+97,Discharge Derating,"Dis power @ -20--15°C @ [40,60%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+98,Discharge Derating,"Dis power @ -15--10°C @ [40,60%)",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+99,Discharge Derating,"Dis power @ -10--5°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+100,Discharge Derating,"Dis power @ -5-0°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+101,Discharge Derating,"Dis power @ 0-5°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+102,Discharge Derating,"Dis power @ 5-10°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+103,Discharge Derating,"Dis power @ 10-15°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+104,Discharge Derating,"Dis power @ 15-20°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+105,Discharge Derating,"Dis power @ 20-25°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+106,Discharge Derating,"Dis power @ 25-30°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+107,Discharge Derating,"Dis power @ 30-35°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+108,Discharge Derating,"Dis power @ 35-40°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+109,Discharge Derating,"Dis power @ 40-45°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+110,Discharge Derating,"Dis power @ 45-50°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+111,Discharge Derating,"Dis power @ 50-55°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+112,Discharge Derating,"Dis power @ 55-60°C @ [40,60%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+113,Discharge Derating,"Dis power @ -30--25°C @ [60,80%)",P,0.10P,0.09P,0.12P,0.08P,0.09P,0.11P,0.07P,,0.08P,,0.12P,
+114,Discharge Derating,"Dis power @ -25--20°C @ [60,80%)",P,0.10P,0.09P,0.12P,0.08P,0.09P,0.11P,0.07P,0.09P,0.08P,0.08P,0.12P,
+115,Discharge Derating,"Dis power @ -20--15°C @ [60,80%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+116,Discharge Derating,"Dis power @ -15--10°C @ [60,80%)",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+117,Discharge Derating,"Dis power @ -10--5°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+118,Discharge Derating,"Dis power @ -5-0°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+119,Discharge Derating,"Dis power @ 0-5°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+120,Discharge Derating,"Dis power @ 5-10°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+121,Discharge Derating,"Dis power @ 10-15°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+122,Discharge Derating,"Dis power @ 15-20°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+123,Discharge Derating,"Dis power @ 20-25°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+124,Discharge Derating,"Dis power @ 25-30°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+125,Discharge Derating,"Dis power @ 30-35°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+126,Discharge Derating,"Dis power @ 35-40°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+127,Discharge Derating,"Dis power @ 40-45°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+128,Discharge Derating,"Dis power @ 45-50°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+129,Discharge Derating,"Dis power @ 50-55°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+130,Discharge Derating,"Dis power @ 55-60°C @ [60,80%)",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+131,Discharge Derating,"Dis power @ -30--25°C @ [80,100%]",P,0.10P,0.09P,0.12P,0.08P,0.09P,0.11P,0.07P,,0.08P,,0.12P,
+132,Discharge Derating,"Dis power @ -25--20°C @ [80,100%]",P,0.10P,0.09P,0.12P,0.08P,0.09P,0.11P,0.07P,0.09P,0.08P,0.08P,0.12P,
+133,Discharge Derating,"Dis power @ -20--15°C @ [80,100%]",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+134,Discharge Derating,"Dis power @ -15--10°C @ [80,100%]",P,0.20P,0.19P,0.22P,0.18P,0.19P,0.21P,0.17P,0.19P,0.18P,0.18P,0.22P,
+135,Discharge Derating,"Dis power @ -10--5°C @ [80,100%]",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+136,Discharge Derating,"Dis power @ -5-0°C @ [80,100%]",P,0.30P,0.29P,0.32P,0.28P,0.29P,0.31P,0.27P,0.29P,0.28P,0.28P,0.32P,
+137,Discharge Derating,"Dis power @ 0-5°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+138,Discharge Derating,"Dis power @ 5-10°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+139,Discharge Derating,"Dis power @ 10-15°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+140,Discharge Derating,"Dis power @ 15-20°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+141,Discharge Derating,"Dis power @ 20-25°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+142,Discharge Derating,"Dis power @ 25-30°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+143,Discharge Derating,"Dis power @ 30-35°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+144,Discharge Derating,"Dis power @ 35-40°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+145,Discharge Derating,"Dis power @ 40-45°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+146,Discharge Derating,"Dis power @ 45-50°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+147,Discharge Derating,"Dis power @ 50-55°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+148,Discharge Derating,"Dis power @ 55-60°C @ [80,100%]",P,0.50P,0.49P,0.52P,0.48P,0.49P,0.51P,0.47P,0.49P,0.48P,0.48P,0.52P,
+149,Charge Derating,"Chg power @ 0-5°C @ [0,20%)",P,0.20P,0.19P,0.21P,0.19P,0.20P,0.21P,0.18P,,0.19P,,0.21P,
+150,Charge Derating,"Chg power @ 5-10°C @ [0,20%)",P,0.23P,0.22P,0.24P,0.22P,0.23P,0.24P,0.21P,0.22P,0.22P,0.22P,0.24P,
+151,Charge Derating,"Chg power @ 10-15°C @ [0,20%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+152,Charge Derating,"Chg power @ 15-20°C @ [0,20%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+153,Charge Derating,"Chg power @ 20-25°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+154,Charge Derating,"Chg power @ 25-30°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+155,Charge Derating,"Chg power @ 30-35°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+156,Charge Derating,"Chg power @ 35-40°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+157,Charge Derating,"Chg power @ 40-45°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+158,Charge Derating,"Chg power @ 45-50°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+159,Charge Derating,"Chg power @ 50-55°C @ [0,20%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+160,Charge Derating,"Chg power @ 55-60°C @ [0,20%)",P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,
+161,Charge Derating,"Chg power @ 0-5°C @ [20,40%)",P,0.15P,0.14P,0.16P,0.14P,0.15P,0.16P,0.13P,,0.14P,,0.16P,
+162,Charge Derating,"Chg power @ 5-10°C @ [20,40%)",P,0.23P,0.22P,0.24P,0.22P,0.23P,0.24P,0.21P,0.22P,0.22P,0.22P,0.24P,
+163,Charge Derating,"Chg power @ 10-15°C @ [20,40%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+164,Charge Derating,"Chg power @ 15-20°C @ [20,40%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+165,Charge Derating,"Chg power @ 20-25°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+166,Charge Derating,"Chg power @ 25-30°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+167,Charge Derating,"Chg power @ 30-35°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+168,Charge Derating,"Chg power @ 35-40°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+169,Charge Derating,"Chg power @ 40-45°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+170,Charge Derating,"Chg power @ 45-50°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+171,Charge Derating,"Chg power @ 50-55°C @ [20,40%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+172,Charge Derating,"Chg power @ 55-60°C @ [20,40%)",P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,
+173,Charge Derating,"Chg power @ 0-5°C @ [40,60%)",P,0.15P,0.14P,0.16P,0.14P,0.15P,0.16P,0.13P,,0.14P,,0.16P,
+174,Charge Derating,"Chg power @ 5-10°C @ [40,60%)",P,0.23P,0.22P,0.24P,0.22P,0.23P,0.24P,0.21P,0.22P,0.22P,0.22P,0.24P,
+175,Charge Derating,"Chg power @ 10-15°C @ [40,60%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+176,Charge Derating,"Chg power @ 15-20°C @ [40,60%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+177,Charge Derating,"Chg power @ 20-25°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+178,Charge Derating,"Chg power @ 25-30°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+179,Charge Derating,"Chg power @ 30-35°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+180,Charge Derating,"Chg power @ 35-40°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+181,Charge Derating,"Chg power @ 40-45°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+182,Charge Derating,"Chg power @ 45-50°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+183,Charge Derating,"Chg power @ 50-55°C @ [40,60%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+184,Charge Derating,"Chg power @ 55-60°C @ [40,60%)",P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,
+185,Charge Derating,"Chg power @ 0-5°C @ [60,80%)",P,0.10P,0.09P,0.11P,0.09P,0.10P,0.11P,0.08P,,0.09P,,0.11P,
+186,Charge Derating,"Chg power @ 5-10°C @ [60,80%)",P,0.15P,0.14P,0.16P,0.14P,0.15P,0.16P,0.13P,0.14P,0.14P,0.14P,0.16P,
+187,Charge Derating,"Chg power @ 10-15°C @ [60,80%)",P,0.23P,0.22P,0.24P,0.22P,0.23P,0.24P,0.21P,0.22P,0.22P,0.22P,0.24P,
+188,Charge Derating,"Chg power @ 15-20°C @ [60,80%)",P,0.33P,0.32P,0.34P,0.32P,0.33P,0.34P,0.31P,0.32P,0.32P,0.32P,0.34P,
+189,Charge Derating,"Chg power @ 20-25°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+190,Charge Derating,"Chg power @ 25-30°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+191,Charge Derating,"Chg power @ 30-35°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+192,Charge Derating,"Chg power @ 35-40°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+193,Charge Derating,"Chg power @ 40-45°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+194,Charge Derating,"Chg power @ 45-50°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+195,Charge Derating,"Chg power @ 50-55°C @ [60,80%)",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+196,Charge Derating,"Chg power @ 55-60°C @ [60,80%)",P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,
+197,Charge Derating,"Chg power @ 0-5°C @ [80,100%]",P,0.05P,0.04P,0.06P,0.04P,0.05P,0.06P,0.03P,,0.04P,,0.06P,
+198,Charge Derating,"Chg power @ 5-10°C @ [80,100%]",P,0.10P,0.09P,0.11P,0.09P,0.10P,0.11P,0.08P,0.09P,0.09P,0.09P,0.11P,
+199,Charge Derating,"Chg power @ 10-15°C @ [80,100%]",P,0.13P,0.12P,0.14P,0.12P,0.13P,0.14P,0.11P,0.12P,0.12P,0.12P,0.14P,
+200,Charge Derating,"Chg power @ 15-20°C @ [80,100%]",P,0.20P,0.19P,0.21P,0.19P,0.20P,0.21P,0.18P,0.19P,0.19P,0.19P,0.21P,
+201,Charge Derating,"Chg power @ 20-25°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+202,Charge Derating,"Chg power @ 25-30°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+203,Charge Derating,"Chg power @ 30-35°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+204,Charge Derating,"Chg power @ 35-40°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+205,Charge Derating,"Chg power @ 40-45°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+206,Charge Derating,"Chg power @ 45-50°C @ [80,100%]",P,0.50P,0.49P,0.51P,0.49P,0.50P,0.51P,0.48P,0.49P,0.49P,0.49P,0.51P,
+207,Charge Derating,"Chg power @ 50-55°C @ [80,100%]",P,0.25P,0.24P,0.26P,0.24P,0.25P,0.26P,0.23P,0.24P,0.24P,0.24P,0.26P,
+208,Charge Derating,"Chg power @ 55-60°C @ [80,100%]",P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,0.00P,
