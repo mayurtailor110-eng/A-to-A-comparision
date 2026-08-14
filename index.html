@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cell Ranking — Apple-to-Apple Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0B0E13;
+    --panel:#141922;
+    --panel-2:#1A212C;
+    --line:#26303E;
+    --line-soft:#1E2733;
+    --ink:#EEF3F8;
+    --muted:#8496A8;
+    --dim:#5A6a7a;
+    --t1:#3DDC84;
+    --t1-dim:#1f7a4a;
+    --t2:#FFB13C;
+    --t2-dim:#a06d1a;
+    --t3:#7C8BA0;
+    --t3-dim:#465464;
+    --fail:#FF5D73;
+    --gap:#C86BFF;
+    --accent:#5FD0FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 500px at 88% -8%, rgba(95,208,255,0.06), transparent),
+      radial-gradient(900px 500px at 5% 105%, rgba(61,220,132,0.05), transparent),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1300px;margin:0 auto;padding:0 26px;}
+
+  /* header */
+  .top{
+    border-bottom:1px solid var(--line);
+    padding:24px 0 20px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:7px;}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.05;}
+  h1 .sub{display:block;font-size:13px;font-weight:400;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:6px;letter-spacing:0;}
+  .sync{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);
+    display:flex;align-items:center;gap:9px;text-align:right;
+  }
+  .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);}
+  .sync .dot.live{background:var(--t1);box-shadow:0 0 7px var(--t1);}
+  .sync .dot.err{background:var(--fail);}
+  .sync button{background:transparent;border:1px solid var(--line);color:var(--ink);font-family:inherit;font-size:10.5px;padding:5px 11px;border-radius:6px;cursor:pointer;margin-left:4px;}
+  .sync button:hover{border-color:var(--accent);}
+
+  /* basis banner */
+  .basis{
+    margin-top:18px;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:11px;padding:14px 18px;
+    display:flex;gap:26px;flex-wrap:wrap;align-items:center;
+  }
+  .basis .lead{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:var(--ink);display:flex;align-items:center;gap:9px;}
+  .basis .lead::before{content:'';width:9px;height:9px;border-radius:2px;background:var(--accent);}
+  .basis .chip{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);}
+  .basis .chip b{color:var(--ink);font-weight:600;}
+
+  /* section */
+  .sec{margin:38px 0 16px;display:flex;align-items:baseline;gap:12px;}
+  .sec .k{font-family:'IBM Plex Mono',monospace;color:var(--t1-dim);font-size:12px;}
+  .sec h2{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;}
+  .sec .rule{flex:1;height:1px;background:var(--line);}
+  .sec .note{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);}
+
+  /* ---- tier ladder (signature) ---- */
+  .ladder{display:flex;flex-direction:column;gap:14px;}
+  .tier{
+    border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--panel);
+  }
+  .tier-head{
+    display:flex;align-items:center;gap:14px;padding:13px 18px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .tier-badge{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+    width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .t1 .tier-badge{background:rgba(61,220,132,.14);color:var(--t1);border:1px solid var(--t1-dim);}
+  .t2 .tier-badge{background:rgba(255,177,60,.13);color:var(--t2);border:1px solid var(--t2-dim);}
+  .t3 .tier-badge{background:rgba(124,139,160,.12);color:var(--t3);border:1px solid var(--t3-dim);}
+  .tier-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;}
+  .tier-desc{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .tier-count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
+
+  .tier-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px;padding:14px 18px;}
+  .tier-body.empty{padding:16px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
+
+  .scard{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:13px 13px 11px;
+    display:flex;flex-direction:column;gap:9px;position:relative;
+  }
+  .scard .rank{position:absolute;top:11px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);}
+  .scard .nm{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;letter-spacing:-.01em;}
+  .scard .md{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--dim);line-height:1.3;min-height:12px;}
+  .scard .scorewrap{display:flex;align-items:baseline;gap:6px;}
+  .scard .score{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;line-height:1;}
+  .t1 .score{color:var(--t1);}.t2 .score{color:var(--t2);}.t3 .score{color:var(--t3);}
+  .scard .score-l{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.04em;}
+  .scard .verdict{font-family:'IBM Plex Mono',monospace;font-size:9.5px;padding:2px 7px;border-radius:20px;align-self:flex-start;letter-spacing:.03em;}
+  .verdict.pass{background:rgba(61,220,132,.14);color:var(--t1);}
+  .verdict.partial{background:rgba(255,177,60,.14);color:var(--t2);}
+  .verdict.fail{background:rgba(255,93,115,.14);color:var(--fail);}
+  .verdict.unknown{background:rgba(124,139,160,.12);color:var(--t3);}
+  .legal{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;border-radius:20px;align-self:flex-start;letter-spacing:.02em;}
+  .legal.lg-good{background:rgba(61,220,132,.12);color:var(--t1);}
+  .legal.lg-mid{background:rgba(255,177,60,.12);color:var(--t2);}
+  .legal.lg-bad{background:rgba(255,93,115,.13);color:var(--fail);}
+  .legal.lg-neutral{background:rgba(124,139,160,.1);color:var(--t3);}
+
+  /* completeness bar */
+  .cbar{display:flex;flex-direction:column;gap:4px;}
+  .cbar .lbl{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);}
+  .cbar .track{height:5px;background:#0B0E13;border-radius:3px;overflow:hidden;}
+  .cbar .fill{height:100%;border-radius:3px;transition:width .7s ease;}
+  .cbar .fill.hi{background:linear-gradient(90deg,var(--t1-dim),var(--t1));}
+  .cbar .fill.mid{background:linear-gradient(90deg,var(--t2-dim),var(--t2));}
+  .cbar .fill.lo{background:linear-gradient(90deg,var(--fail),#ff8fa0);}
+
+  .why{font-size:10.5px;line-height:1.45;color:#B7C4D2;border-top:1px solid var(--line-soft);padding-top:8px;}
+  .gaps{display:flex;flex-wrap:wrap;gap:4px;}
+  .gaps .g{font-family:'IBM Plex Mono',monospace;font-size:8.5px;background:rgba(200,107,255,.1);color:var(--gap);border:1px solid rgba(200,107,255,.25);padding:1px 6px;border-radius:4px;}
+
+  /* temperature charts */
+  .chartgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:860px){.chartgrid{grid-template-columns:1fr;}}
+  .chartcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px 12px;}
+  .chartcard h3{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;margin-bottom:3px;}
+  .chartcard .cond{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--accent);margin-bottom:12px;}
+  .chartcard canvas{max-height:240px;}
+  .chartcard.awaiting{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;text-align:center;gap:8px;}
+  .chartcard.awaiting .ic{font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--gap);}
+  .chartcard.awaiting .msg{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;max-width:230px;}
+  .chartcard.awaiting h3{color:var(--dim);}
+  .temp-empty{background:var(--panel);border:1px dashed var(--gap);border-radius:12px;padding:22px 20px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);line-height:1.6;}
+  .temp-empty b{color:var(--gap);}
+  .derate-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .derate-controls .dc-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;}
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;margin-right:8px;}
+  .seg button{background:transparent;border:none;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:5px 11px;border-radius:6px;cursor:pointer;}
+  .seg button.on{background:var(--accent);color:#0B0E13;font-weight:600;}
+
+  /* comparison matrix */
+  .matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);}
+  table{border-collapse:collapse;width:100%;font-size:12px;min-width:900px;}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  thead th{
+    position:sticky;top:0;background:var(--panel-2);font-family:'IBM Plex Mono',monospace;
+    font-size:10px;font-weight:600;letter-spacing:.03em;color:var(--muted);text-transform:uppercase;z-index:2;
+  }
+  thead th.mfr{color:var(--ink);}
+  tbody .cat{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+  tbody .param{font-weight:600;color:var(--ink);white-space:nowrap;}
+  tbody .param .u{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--dim);font-weight:400;}
+  tbody .cond{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);margin-top:2px;}
+  td.val{font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:pre-line;line-height:1.4;color:#C8D4E0;}
+  td.best{background:rgba(61,220,132,.07);}
+  td.best .v{color:var(--t1);font-weight:600;}
+  td.miss{color:var(--t3-dim);}
+  td.flag{position:relative;}
+  td.flag::after{content:'≠';position:absolute;top:5px;right:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gap);}
+  td.remark{font-size:10px;line-height:1.4;color:var(--muted);white-space:pre-line;min-width:180px;}
+  .reqtag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8.5px;padding:1px 5px;border-radius:3px;margin-left:6px;background:rgba(95,208,255,.12);color:var(--accent);vertical-align:middle;}
+  .st{display:inline-flex;width:15px;height:15px;border-radius:50%;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+  .st.y{background:rgba(61,220,132,.16);color:var(--t1);}
+  .st.n{background:rgba(255,93,115,.16);color:var(--fail);}
+  .st.u{background:rgba(124,139,160,.14);color:var(--t3);}
+
+  /* filter chips */
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
+  .chips button{background:var(--panel);border:1px solid var(--line);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:6px 12px;border-radius:18px;cursor:pointer;}
+  .chips button.on{background:rgba(95,208,255,.12);border-color:var(--accent);color:var(--accent);}
+
+  /* legend / method */
+  .method{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:820px){.method{grid-template-columns:1fr;}}
+  .mcard{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px 17px;}
+  .mcard h3{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;margin-bottom:10px;color:var(--ink);}
+  .wt{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  .wt .wn{font-size:11px;color:#C8D4E0;flex:1;}
+  .wt .wtrack{width:120px;height:6px;background:#0B0E13;border-radius:3px;overflow:hidden;}
+  .wt .wfill{height:100%;background:linear-gradient(90deg,var(--accent),#8fe0ff);border-radius:3px;}
+  .wt .wv{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--accent);width:34px;text-align:right;}
+  .legrow{display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.5;color:#B7C4D2;margin-bottom:7px;}
+  .legrow .k{flex:none;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;margin-top:1px;}
+  .k.t1c{background:rgba(61,220,132,.14);color:var(--t1);}
+  .k.t2c{background:rgba(255,177,60,.14);color:var(--t2);}
+  .k.t3c{background:rgba(124,139,160,.14);color:var(--t3);}
+  .k.gapc{background:rgba(200,107,255,.12);color:var(--gap);}
+
+  footer{margin-top:44px;border-top:1px solid var(--line);padding-top:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);}
+
+  @media(max-width:640px){
+    h1{font-size:21px;}
+    .basis{gap:14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="eyebrow">Procurement Review · Confidential</div>
+      <h1>Cell Ranking — Apple&#8209;to&#8209;Apple
+        <span class="sub" id="hero-sub">314Ah LFP Prismatic · loading…</span>
+      </h1>
+    </div>
+    <div class="sync">
+      <span class="dot" id="dot"></span>
+      <span id="syncmsg">Loading…</span>
+      <button onclick="loadData(true)">Refresh</button>
+    </div>
+  </div>
+
+  <!-- Basis banner: the rules of the comparison, stated up front -->
+  <div class="basis">
+    <span class="lead">Comparison basis</span>
+    <span class="chip">End of life&nbsp; <b>70% SOH</b></span>
+    <span class="chip">Depth of discharge&nbsp; <b>100% DoD</b></span>
+    <span class="chip">Rate&nbsp; <b>0.5C</b></span>
+    <span class="chip">Reference temp&nbsp; <b>25±2°C</b></span>
+    <span class="chip" style="color:var(--gap)">Figures off this basis are flagged&nbsp;<b style="color:var(--gap)">≠</b>&nbsp;not scored</span>
+  </div>
+
+  <!-- ===== TIER LADDER ===== -->
+  <div class="sec">
+    <span class="k">01</span><h2>Tier ranking</h2>
+    <span class="rule"></span>
+    <span class="note" id="ladder-note"></span>
+  </div>
+  <div class="ladder" id="ladder"></div>
+
+  <!-- ===== TEMPERATURE PERFORMANCE ===== -->
+  <div class="sec">
+    <span class="k">02</span><h2>Temperature &amp; degradation performance</h2>
+    <span class="rule"></span>
+    <span class="note" id="temp-note"></span>
+  </div>
+  <div id="temp-empty" class="temp-empty" style="display:none"></div>
+  <div class="chartgrid" id="chartgrid"></div>
+
+  <!-- ===== POWER DERATING (SOC-selectable) ===== -->
+  <div id="derating-wrap">
+    <div class="sec">
+      <span class="k">03</span><h2>Power derating vs temperature</h2>
+      <span class="rule"></span>
+      <span class="note" id="derate-note"></span>
+    </div>
+    <div class="derate-controls" id="derate-controls" style="display:none">
+      <span class="dc-lbl">Direction</span>
+      <div class="seg" id="derate-dir"></div>
+      <span class="dc-lbl">SOC band</span>
+      <div class="seg" id="derate-soc"></div>
+    </div>
+    <div id="derate-empty" class="temp-empty" style="display:none"></div>
+    <div class="chartcard" id="derate-card" style="display:none">
+      <h3 id="derate-title">Discharge power vs temperature</h3>
+      <div class="cond" id="derate-cond"></div>
+      <div style="height:280px"><canvas id="derate-canvas"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ===== METHOD ===== -->
+  <div class="sec">
+    <span class="k">04</span><h2>How the tiers are decided</h2><span class="rule"></span>
+  </div>
+  <div class="method">
+    <div class="mcard">
+      <h3>Scoring weights</h3>
+      <div id="weights"></div>
+    </div>
+    <div class="mcard">
+      <h3>Tier rules &amp; flags</h3>
+      <div class="legrow"><span class="k t1c">T1</span><span>Meets every mandatory requirement on the stated basis <b>and</b> composite score ≥ 70.</span></div>
+      <div class="legrow"><span class="k t2c">T2</span><span>Meets all requirements <b>or</b> misses only on data not yet supplied; composite 52–69.</span></div>
+      <div class="legrow"><span class="k t3c">T3</span><span>Fails a mandatory requirement, or too much critical data missing to qualify.</span></div>
+      <div class="legrow"><span class="k gapc">≠ / gap</span><span>Figure exists but was measured off the agreed basis, or is not yet supplied — shown, never silently scored as pass or fail.</span></div>
+    </div>
+  </div>
+
+  <!-- ===== MATRIX ===== -->
+  <div class="sec">
+    <span class="k">05</span><h2>Parameter matrix</h2>
+    <span class="rule"></span>
+    <span class="note">best value per row highlighted</span>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="matrix-wrap">
+    <table>
+      <thead><tr id="mhead"></tr></thead>
+      <tbody id="mbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span id="foot-src">Static snapshot</span>
+    <span id="foot-count"></span>
+  </footer>
+</div>
+
+<script>
+/* =======================================================================
+   CONFIG — reads the SAME sheet as the main dashboard.
+   ======================================================================= */
+const CONFIG = { CSV_URL: "cells.csv", AUTO_REFRESH_MINUTES: 5 };
+
+/* Agreed comparison basis (must match the tender). */
+const BASIS = { soh:70, dod:100, rate:"0.5C", temp:"25±2°C" };
+
+/* Mandatory requirements — the gate. A FAIL here caps a cell at T3. */
+const REQUIREMENTS = [
+  { label:"Cycle life",  keywords:["cycle life"], type:"min", min:9000, unit:"cycles", cond:"70% SOH · 100% DoD · 0.5C", extractor:"cycle", basisGate:true, req:true },
+  { label:"Gravimetric ED", keywords:["gravimetric"], type:"range", min:170, max:185, unit:"Wh/kg", cond:"170–185", extractor:"float", req:true },
+  { label:"Volumetric ED",  keywords:["volumetric"],  type:"range", min:380, max:395, unit:"Wh/L", cond:"380–395", extractor:"float", req:true },
+];
+
+/* Scoring weights. Temperature/efficiency dimensions are declared so the
+   COO sees them, but they carry no score until supplier curve data lands —
+   they surface instead as completeness gaps. */
+const WEIGHTS = { cycle:0.36, cert:0.26, ir:0.16, vol:0.11, grav:0.11 };
+const WLABELS = {
+  cycle:"Cycle life (70% SOH basis)", cert:"Certifications on file",
+  ir:"Internal resistance (lower better)", vol:"Volumetric energy density",
+  grav:"Gravimetric energy density"
+};
+
+/* Dimensions we WANT but nobody has supplied on a common basis yet —
+   these show as gaps and drag the completeness bar down. */
+const AWAITED = [
+  "Efficiency vs temp", "Power vs temp", "Low-temp RTE",
+  "SOH degradation curve", "Altitude derating", "Swelling report"
+];
+
+</script>
+<script>
+/* ---- exact data carried over from the existing dashboard ---- */
+const FALLBACK_MFRS = ["COSPOWER", "EVE", "HITHIUM", "YOUNGY ENERGY", "GREAT POWER", "CORNEX", "Tianneng Energy", "REPT", "NETC", "CNET - Lishen", "Gotion"];
+const FALLBACK_ROWS = [
+{cat:"Commercial",param:"Manufacturer/Model",unit:"-",v:["COSPOWER / FP71173207A-314Ah","MB31","LFP71173207","RBA4F1","GSP71173204F","PF173 - 314A","TNS71173207B314","CB75","","","IFP72175207A-314Ah"],remark:""},
+{cat:"Commercial",param:"Manufacturer Production Capacity (314Ah)",unit:"GWh",v:["","","","","","","","","","",""],remark:""},
+{cat:"Commercial",param:"Manufacturer Plant Capacity",unit:"GWh",v:["","","","","","","","","","",""],remark:""},
+{cat:"Commercial",param:"Company age",unit:"Years",v:["38","25","7","28","25","5","40","9","","29","20"],remark:""},
+{cat:"General",param:"Cell Chemistry",unit:"-",v:["LFP","LFP","LFP","LFP","LFP","LFP","LFP","LFP","LFP","LFP","LFP"],remark:""},
+{cat:"General",param:"Cell Format",unit:"-",v:["Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic","Prismatic"],remark:""},
+{cat:"Electrical",param:"Nominal Voltage",unit:"V",v:["3.2","3.2","3.2","3.2","3.2","3.2","3.2","3.2","3.2","3.2","3.2"],remark:""},
+{cat:"Electrical",param:"Rated Capacity",unit:"Ah",v:["314","314","314","314","314","314","314","314","314","314","314"],remark:""},
+{cat:"Electrical",param:"Energy",unit:"Wh",v:["1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001","1004.8000000000001"],remark:""},
+{cat:"Electrical",param:"Charge Cutoff voltage",unit:"V",v:["3.65","3.65","3.65","3.65","3.65","3.65","3.65","3.65","3.65","3.65","3.65"],remark:""},
+{cat:"Electrical",param:"Discharge Cutoff voltage",unit:"V",v:["2.5","2.5","2.5","2.5","2.5","2.5","2.5","2.5","2.5","2.5","2.5"],remark:""},
+{cat:"Electrical",param:"Cell RTE",unit:"%",v:["≥ 94.5%","≥ 94.5%","≥ 94.5%","≥ 94.5%","≥ 94.5%","≥ 94.5%","≥ 94.5%","≥ 94%","≥ 94.5%","≥ 94%","≥ 94.5%"],remark:""},
+{cat:"Energy Density",param:"Gravimetric Energy Density",unit:"Wh/kg",v:["179.42857142857144","179.42857142857144","179.42857142857144","182.69090909090912","182.69090909090912","179.42857142857144","174.74782608695654","179.42857142857144","179.42857142857144","179.42857142857144","179.42857142857144"],remark:""},
+{cat:"Energy Density",param:"Volumetric Energy Density",unit:"Wh/L",v:["390.97276264591443","389.4573643410853","385","389.4573643410853","390.97276264591443","389.4573643410853","386.46153846153845","394.0392156862746","389.4573643410853","390.97276264591443","387.953667953668"],remark:""},
+{cat:"Power",param:"Standard Charge / Discharge Current",unit:"C rate",v:["0.5","0.5","0.5","0.5","0.5","0.5","0.5","0.5","0.5","0.5","0.5"],remark:""},
+{cat:"Power",param:"Internal Resistance (ACIR)",unit:"mΩ",v:["0.17 ± 0.05","0.18 ± 0.05","0.20 ± 0.05","0.195 ± 0.035","0.2 ± 0.05","0.19±0.05mΩ","≤0.25 mΩ","≤0.3 mΩ","≤0.25 mΩ","≤ 0.22 mΩ","≤ 0.25 mΩ"],remark:""},
+{cat:"Life time",param:"Cycle Life",unit:"Cycles",v:["9000 cycle at\n25±2℃ \n70%SOH","8000 cycle at\n25±2℃ \n70%SOH","＞11000 cycle at  \n25±2℃\n 70%SOH","≥ 9000 cycle at\n  25±2℃ \n70%SOH","≥ 8000 cycle at\n25±2℃ \n70%SOH","9000 cycle at\n25℃±2℃\n70%SOH","≥ 8000 cycle at\n25±2℃ \n70%SOH","≥ 8000 cycle at\n25±2℃ \n70%SOH","≥ 8000 cycle at\n25±2℃ \n70%SOH","8000 cycle at\n25±2℃ \n70%SOH","＞12000 cycle at  \n25±2℃\n 70%SOH"],remark:""},
+{cat:"Life time",param:"Cycle life given at DoD",unit:"%",v:["100","100","100","100","100","100","100","100","100","100","100"],remark:""},
+{cat:"Life time",param:"Service life",unit:"Years",v:["","","12","","","12","","","","","12"],remark:"Cornex submitted new data after meeting with them (Mr.jayvir visit china)"},
+{cat:"Thermal",param:"Charge Operating Temp",unit:"°C",v:["5 ~ 60","0～ 60","0 ～ 60","0 ～ 55","0 ～ 60","0 ～ 60","0 ～ 60","0 ～ 60","0 ～ 60","0 ～ 50","0 ～ 55"],remark:"EVE and Great power cell providing similar temperature operating range as HITHIUM"},
+{cat:"Thermal",param:"DisCharge Operating Temp",unit:"°C",v:["-20 ~ 60","-30 ～ 60","-30 ～ 60","-20 ～ 55","-30 ～ 60","-20 ～ 60","-20 ～ 60","-20 ～ 60","-20 ～ 60","-20 ～ 60","-30 ～ 60"],remark:""},
+{cat:"Thermal",param:"Storage temperature",unit:"°C",v:["-20 ~ 35","-20 ～ 35","-20～ 35","5～ 25","-10 ～ 30","-10 ～ 30 @Storage ambient humidity ≤75% RH, no\ncondensation.","-20 ～ 25","10 ～ 25","10 ～ 25","10 ～ 25","10 ～ 35"],remark:""},
+{cat:"Physical",param:"Dimensions",unit:"mm",v:["W- 173.8±0.5\nH - 207.2±0.5 \nT - 71.5±0.5","W - 173.7±0.5\nH - 207.2±0.5\nT - 71.70±0.8","W-174.70 ± 0.5\nH-204.47 ± 0.5 \nT-71.70 ± 0.5","W-174.3 ± 0.5 \nH- 207.1±0.5 \nT-71.6±0.5","W-173.90 ± 0.8 \nH- 206.50±0.8\nT-71.70±0.5","W-174.4 ± 0.85\nH- 207.2±0.5\nT-71.70±0.5 \nThickness test condition: 27%SOC, pressure of\n300±20kgf","W-173.8± 1\nH- 207.2±1\nT-71.70±0.8 \n(300±20kgf)","W-174±0.8\nH- 206.8±0.8\nT-71.875±0.8","W-173.5±0.8\nH- 207.2±0.8\nT-71.8±0.8 \n(300±20kgf)","W-173.8±0.5\nH- 207.2±0.5\nT-71.5±0.8","W-174.8±0.5\nH- 207.2±0.5\nT-71.65±0.8"],remark:"CP,EVE,YE and GP cells Hight dimensions is 3mm Higher then HITHIUM Cell and minor dimension change in Width and Thickness."},
+{cat:"Physical",param:"Weight",unit:"Kg",v:["5.60±0.3","5.60±0.3","5.60±0.3","5.5 ± 0.3","5.50 ± 0.15","5.60 ± 0.084","5.75±0.15","5.67","5.6","5.6","5.6"],remark:"Weight Almost same of all brand."},
+{cat:"Compliance",param:"Certifications",unit:"-",v:["UN38.3\nUL1973 \nUL9540A \nIEC62619","GB/T 36276-2018\nIEC 62619-2022\nUL 1973-2022\nUL 9540-2019\nUN38.3-2019","GB/T 36276-2018\nIEC 62619-2022\nUL 1973-2022\nUL 9540-2019\nUN38.3-2019","GB/T 36276-2018\nUN 38.3","GB/T36276-2023\nUL9540A\nUL1973\nIEC62619\nUN38.3","GB/T36276-2023\nUL9540A\nUL1973\nIEC62619\nUN38.3","GB/T36276-2023","GB/T36276-2023\nUL9540A\nUL1973\nIEC62619\nUN38.3","GB/T36276-2023\nUN38.3","GB/T36276-2023\nUN38.3","GB/T 36276-2018\nIEC 62619-2022\nUL 1973-2022\nUL 9540-2019\nUN38.3-2019"],remark:"1. EVE only mention one certification details.\n2. GP Contains same certification as Hithium.\n3.We required UL9540A,UL1973 & IEC62619 certification details from YE.\n4. required GB/T 36276-2018 detail from CP."},
+{cat:"Supplier Status",param:"Legal",unit:"-",v:["MOU Signed","NDA - Signed","MSA -Under Review","Not Required","Not Required","Under Review","Rejected","NDA -Signed","Not Required","Not Required","Not Required"],remark:""},
+{cat:"Supplier Status",param:"Commercial",unit:"-",v:["NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA"],remark:""},
+{cat:"Supplier Status",param:"Technical",unit:"-",v:["Pending - Technical Docs","Received - Technical Docs","Received - Technical Docs","Pending - Technical Docs","Pending - Technical Docs","Received - Technical Docs","Received - Technical Docs","Pending - Technical Docs","Pending - Technical Docs","Pending - Technical Docs","Received - Technical Docs"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ -20°C",unit:"%",v:["86.9","85.8","88.0","85.5","86.7","87.2","84.8","","85.1","","87.9"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ -10°C",unit:"%",v:["89.7","89.0","91.2","88.5","89.5","90.4","88.6","89.5","88.4","89.2","90.8"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ 0°C",unit:"%",v:["93.3","91.9","93.6","91.5","92.5","93.6","90.9","92.5","91.6","91.7","94.2"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ 10°C",unit:"%",v:["94.7","93.7","95.7","93.9","94.6","95.2","93.3","94.4","93.3","94.0","96.4"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ 25°C",unit:"%",v:["96.3","95.7","97.4","95.6","96.4","96.6","95.1","95.6","94.9","95.5","97.4"],remark:""},
+{cat:"Efficiency vs Temp",param:"RTE @ 45°C",unit:"%",v:["95.0","93.7","96.0","94.0","94.8","95.6","93.1","94.6","93.6","93.9","96.2"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ -20°C",unit:"%",v:["82.3","81.4","83.0","80.8","81.2","82.6","80.0","81.8","80.6","80.4","83.3"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ -10°C",unit:"%",v:["88.2","86.5","89.0","86.3","87.3","87.9","86.2","86.9","86.0","86.5","89.8"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ 0°C",unit:"%",v:["92.6","91.9","94.1","92.0","93.0","93.7","90.7","92.2","91.1","92.0","94.9"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ 10°C",unit:"%",v:["96.7","95.6","97.8","95.3","96.6","97.4","94.7","95.8","95.2","95.5","98.5"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ 25°C",unit:"%",v:["100","99.1","100","98.7","99.8","99.9","98.3","99.6","98.6","98.9","100"],remark:""},
+{cat:"Capacity vs Temp",param:"Capacity retention @ 45°C",unit:"%",v:["98.9","97.6","100","97.2","98.2","99.1","96.6","98.1","96.8","97.1","100"],remark:""},
+{cat:"Power vs Temp",param:"Cont. discharge power @ -20°C",unit:"kW",v:["0.4","0.4","0.5","0.4","0.5","0.4","0.4","0.4","0.4","0.4","0.5"],remark:""},
+{cat:"Power vs Temp",param:"Cont. discharge power @ 0°C",unit:"kW",v:["0.8","0.7","0.8","0.7","0.7","0.8","0.7","0.8","0.7","0.7","0.8"],remark:""},
+{cat:"Power vs Temp",param:"Cont. discharge power @ 25°C",unit:"kW",v:["1.0","1.0","1.0","1.0","1.0","1.0","1.0","1.0","1.0","1.0","1.0"],remark:""},
+{cat:"Power vs Temp",param:"Cont. discharge power @ 45°C",unit:"kW",v:["1.0","0.9","1.0","0.9","0.9","1.0","0.9","0.9","0.9","0.9","1.0"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 0",unit:"%",v:["","","100.00","","","100.00","","","","","100.00"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 1",unit:"%",v:["","","93.55","","","93.16","","","","","94.07"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 2",unit:"%",v:["","","90.22","","","89.63","","","","","91.00"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 3",unit:"%",v:["","","87.53","","","86.78","","","","","88.53"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 4",unit:"%",v:["","","85.18","","","84.29","","","","","86.37"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 5",unit:"%",v:["","","83.05","","","82.03","","","","","84.41"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 6",unit:"%",v:["","","81.08","","","79.94","","","","","82.59"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 7",unit:"%",v:["","","79.24","","","77.99","","","","","80.90"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 8",unit:"%",v:["","","77.50","","","76.15","","","","","79.30"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 9",unit:"%",v:["","","75.84","","","74.39","","","","","77.77"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 10",unit:"%",v:["","","74.25","","","72.70","","","","","76.31"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 11",unit:"%",v:["","","72.73","","","71.09","","","","","74.91"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 12",unit:"%",v:["","","71.26","","","69.54","","","","","73.56"],remark:""},
+{cat:"SOH Degradation",param:"SOH @ Year 13",unit:"%",v:["","","69.84","","","68.03","","","","","72.25"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -30--25°C @ [0,20%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","","0.18P","","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -25--20°C @ [0,20%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -20--15°C @ [0,20%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -15--10°C @ [0,20%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -10--5°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -5-0°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 0-5°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 5-10°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 10-15°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 15-20°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 20-25°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 25-30°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 30-35°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 35-40°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 40-45°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 45-50°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 50-55°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 55-60°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -30--25°C @ [20,40%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","","0.18P","","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -25--20°C @ [20,40%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -20--15°C @ [20,40%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -15--10°C @ [20,40%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -10--5°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -5-0°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 0-5°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 5-10°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 10-15°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 15-20°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 20-25°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 25-30°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 30-35°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 35-40°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 40-45°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 45-50°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 50-55°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 55-60°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -30--25°C @ [40,60%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","","0.18P","","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -25--20°C @ [40,60%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -20--15°C @ [40,60%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -15--10°C @ [40,60%)",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -10--5°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -5-0°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 0-5°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 5-10°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 10-15°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 15-20°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 20-25°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 25-30°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 30-35°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 35-40°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 40-45°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 45-50°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 50-55°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 55-60°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -30--25°C @ [60,80%)",unit:"P",v:["0.10P","0.09P","0.12P","0.08P","0.09P","0.11P","0.07P","","0.08P","","0.12P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -25--20°C @ [60,80%)",unit:"P",v:["0.10P","0.09P","0.12P","0.08P","0.09P","0.11P","0.07P","0.09P","0.08P","0.08P","0.12P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -20--15°C @ [60,80%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -15--10°C @ [60,80%)",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -10--5°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -5-0°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 0-5°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 5-10°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 10-15°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 15-20°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 20-25°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 25-30°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 30-35°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 35-40°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 40-45°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 45-50°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 50-55°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 55-60°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -30--25°C @ [80,100%]",unit:"P",v:["0.10P","0.09P","0.12P","0.08P","0.09P","0.11P","0.07P","","0.08P","","0.12P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -25--20°C @ [80,100%]",unit:"P",v:["0.10P","0.09P","0.12P","0.08P","0.09P","0.11P","0.07P","0.09P","0.08P","0.08P","0.12P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -20--15°C @ [80,100%]",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -15--10°C @ [80,100%]",unit:"P",v:["0.20P","0.19P","0.22P","0.18P","0.19P","0.21P","0.17P","0.19P","0.18P","0.18P","0.22P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -10--5°C @ [80,100%]",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ -5-0°C @ [80,100%]",unit:"P",v:["0.30P","0.29P","0.32P","0.28P","0.29P","0.31P","0.27P","0.29P","0.28P","0.28P","0.32P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 0-5°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 5-10°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 10-15°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 15-20°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 20-25°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 25-30°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 30-35°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 35-40°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 40-45°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 45-50°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 50-55°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Discharge Derating",param:"Dis power @ 55-60°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.52P","0.48P","0.49P","0.51P","0.47P","0.49P","0.48P","0.48P","0.52P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 0-5°C @ [0,20%)",unit:"P",v:["0.20P","0.19P","0.21P","0.19P","0.20P","0.21P","0.18P","","0.19P","","0.21P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 5-10°C @ [0,20%)",unit:"P",v:["0.23P","0.22P","0.24P","0.22P","0.23P","0.24P","0.21P","0.22P","0.22P","0.22P","0.24P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 10-15°C @ [0,20%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 15-20°C @ [0,20%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 20-25°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 25-30°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 30-35°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 35-40°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 40-45°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 45-50°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 50-55°C @ [0,20%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 55-60°C @ [0,20%)",unit:"P",v:["0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 0-5°C @ [20,40%)",unit:"P",v:["0.15P","0.14P","0.16P","0.14P","0.15P","0.16P","0.13P","","0.14P","","0.16P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 5-10°C @ [20,40%)",unit:"P",v:["0.23P","0.22P","0.24P","0.22P","0.23P","0.24P","0.21P","0.22P","0.22P","0.22P","0.24P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 10-15°C @ [20,40%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 15-20°C @ [20,40%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 20-25°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 25-30°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 30-35°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 35-40°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 40-45°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 45-50°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 50-55°C @ [20,40%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 55-60°C @ [20,40%)",unit:"P",v:["0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 0-5°C @ [40,60%)",unit:"P",v:["0.15P","0.14P","0.16P","0.14P","0.15P","0.16P","0.13P","","0.14P","","0.16P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 5-10°C @ [40,60%)",unit:"P",v:["0.23P","0.22P","0.24P","0.22P","0.23P","0.24P","0.21P","0.22P","0.22P","0.22P","0.24P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 10-15°C @ [40,60%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 15-20°C @ [40,60%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 20-25°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 25-30°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 30-35°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 35-40°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 40-45°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 45-50°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 50-55°C @ [40,60%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 55-60°C @ [40,60%)",unit:"P",v:["0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 0-5°C @ [60,80%)",unit:"P",v:["0.10P","0.09P","0.11P","0.09P","0.10P","0.11P","0.08P","","0.09P","","0.11P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 5-10°C @ [60,80%)",unit:"P",v:["0.15P","0.14P","0.16P","0.14P","0.15P","0.16P","0.13P","0.14P","0.14P","0.14P","0.16P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 10-15°C @ [60,80%)",unit:"P",v:["0.23P","0.22P","0.24P","0.22P","0.23P","0.24P","0.21P","0.22P","0.22P","0.22P","0.24P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 15-20°C @ [60,80%)",unit:"P",v:["0.33P","0.32P","0.34P","0.32P","0.33P","0.34P","0.31P","0.32P","0.32P","0.32P","0.34P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 20-25°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 25-30°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 30-35°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 35-40°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 40-45°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 45-50°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 50-55°C @ [60,80%)",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 55-60°C @ [60,80%)",unit:"P",v:["0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 0-5°C @ [80,100%]",unit:"P",v:["0.05P","0.04P","0.06P","0.04P","0.05P","0.06P","0.03P","","0.04P","","0.06P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 5-10°C @ [80,100%]",unit:"P",v:["0.10P","0.09P","0.11P","0.09P","0.10P","0.11P","0.08P","0.09P","0.09P","0.09P","0.11P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 10-15°C @ [80,100%]",unit:"P",v:["0.13P","0.12P","0.14P","0.12P","0.13P","0.14P","0.11P","0.12P","0.12P","0.12P","0.14P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 15-20°C @ [80,100%]",unit:"P",v:["0.20P","0.19P","0.21P","0.19P","0.20P","0.21P","0.18P","0.19P","0.19P","0.19P","0.21P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 20-25°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 25-30°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 30-35°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 35-40°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 40-45°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 45-50°C @ [80,100%]",unit:"P",v:["0.50P","0.49P","0.51P","0.49P","0.50P","0.51P","0.48P","0.49P","0.49P","0.49P","0.51P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 50-55°C @ [80,100%]",unit:"P",v:["0.25P","0.24P","0.26P","0.24P","0.25P","0.26P","0.23P","0.24P","0.24P","0.24P","0.26P"],remark:""},
+{cat:"Charge Derating",param:"Chg power @ 55-60°C @ [80,100%]",unit:"P",v:["0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P","0.00P"],remark:""},
+];
+
+let MFRS = FALLBACK_MFRS.slice();
+let ROWS = FALLBACK_ROWS.slice();
+let dataSource = "fallback";
+let activeCat = "All";
+
+/* ---------- helpers ---------- */
+function numsIn(s){ return (s.match(/[\d,]+(?:\.\d+)?/g)||[]).map(x=>parseFloat(x.replace(/,/g,''))); }
+function cycleLifeOf(s){ const b=numsIn(s).filter(n=>n>=500); return b.length?Math.max(...b):null; }
+function firstFloat(s){ const m=(s||'').match(/[\d.]+/); return m?parseFloat(m[0]):null; }
+function findRowAny(...kw){ return ROWS.find(r=>{const p=r.param.toLowerCase(); return kw.some(k=>p.includes(k));}); }
+function rawVal(row,i){ if(!row) return ''; const v=(row.v[i]||'').toString().trim(); return (v===''||v==='-'||v==='—')?'':v; }
+
+/* SOH / DoD read for basis gate */
+function sohOf(txt){ const m=(txt||'').match(/(\d{2,3})\s*%\s*SOH/i); return m?parseFloat(m[1]):null; }
+
+function certCountOf(str){
+  const seen=new Set();
+  str.split(/[\n,;]|\s{2,}/).map(s=>s.trim()).forEach(s=>{
+    if(s.length<=2||s==='-'||s==='—') return;
+    const key=s.toUpperCase().replace(/[\s.\-–—]/g,'').replace(/(\d{4,5})(20\d{2})$/,'$1');
+    if(key.length>2) seen.add(key);
+  });
+  return seen.size;
+}
+
+function norm(arr,invert=false){
+  const vals=arr.filter(v=>v!==null&&!isNaN(v));
+  if(!vals.length) return arr.map(()=>null);
+  const mn=Math.min(...vals), mx=Math.max(...vals);
+  return arr.map(v=>{
+    if(v===null||isNaN(v)) return null;
+    if(mx===mn) return 100;
+    const s=(v-mn)/(mx-mn)*100;
+    return invert?100-s:s;
+  });
+}
+
+/* ---------- scoring & tiering ---------- */
+function compute(){
+  const modelRow = findRowAny('manufacturer/model','model');
+  const cycleRow = findRowAny('cycle life');
+  const certRow  = findRowAny('certificat');
+  const irRow    = findRowAny('internal resistance');
+  const gravRow  = findRowAny('gravimetric');
+  const volRow   = findRowAny('volumetric');
+  const priceRow = findRowAny('price');
+  const legalRow = ROWS.find(r=>(r.cat||'').toLowerCase().includes('supplier status') && r.param.toLowerCase()==='legal');
+  const svcRow   = findRowAny('service life');
+  const dodRow   = findRowAny('given at dod','at dod','depth of discharge');
+  const rteRow   = findRowAny('rte','round-trip','round trip');
+
+  const N = MFRS.length;
+  const idx=[...Array(N).keys()];
+
+  const MODEL = idx.map(i=> modelRow? (modelRow.v[i]||'') : '');
+  const CYCLE = idx.map(i=> cycleRow? cycleLifeOf(cycleRow.v[i]||'') : null);
+  const CYCSOH= idx.map(i=> cycleRow? sohOf(cycleRow.v[i]||'') : null);
+  const DOD   = idx.map(i=> dodRow? firstFloat(dodRow.v[i]||'') : null);
+  const CERT  = idx.map(i=> certRow? certCountOf(certRow.v[i]||'') : 0);
+  const IR    = idx.map(i=> irRow? firstFloat(irRow.v[i]||'') : null);
+  const GRAV  = idx.map(i=> gravRow? firstFloat(gravRow.v[i]||'') : null);
+  const VOL   = idx.map(i=> volRow? firstFloat(volRow.v[i]||'') : null);
+  const PRICE = idx.map(i=> priceRow? firstFloat(priceRow.v[i]||'') : null);
+  const RTE   = idx.map(i=> rteRow? firstFloat(rteRow.v[i]||'') : null);
+  const LEGAL = idx.map(i=> legalRow? rawVal(legalRow,i) : '');
+  const SVC   = idx.map(i=> svcRow? firstFloat(svcRow.v[i]||'') : null);
+
+  const nCycle=norm(CYCLE), nCert=norm(CERT), nIR=norm(IR,true),
+        nGrav=norm(GRAV), nVol=norm(VOL), nPrice=norm(PRICE,true);
+
+  /* composite over parameters that actually have data (re-normalized weights) */
+  const MISSING=[], COMPOSITE=idx.map(i=>{
+    const parts=[
+      {s:nCycle[i],w:WEIGHTS.cycle,l:"cycle"},
+      {s:nCert[i], w:WEIGHTS.cert, l:"cert"},
+      {s:nIR[i],   w:WEIGHTS.ir,   l:"ir"},
+      {s:nVol[i],  w:WEIGHTS.vol,  l:"vol"},
+      {s:nGrav[i], w:WEIGHTS.grav, l:"grav"},
+    ];
+    const have=parts.filter(p=>p.s!==null&&!isNaN(p.s));
+    MISSING[i]=parts.filter(p=>p.s===null||isNaN(p.s)).map(p=>WLABELS[p.l]);
+    const wSum=have.reduce((a,p)=>a+p.w,0);
+    return wSum? Math.round(have.reduce((a,p)=>a+p.s*p.w,0)/wSum) : null;
+  });
+
+  /* requirement gate */
+  const figFor=(req,i)=>{
+    const row=findRowAny(...req.keywords); if(!row) return null;
+    const cell=(row.v[i]||'').toString();
+    return req.extractor==='cycle'? cycleLifeOf(cell) : firstFloat(cell);
+  };
+  const passOne=(req,v)=>{
+    if(v===null||isNaN(v)) return 'u';
+    if(req.type==='min') return v>=req.min?'y':'n';
+    if(req.type==='range') return (v>=req.min&&v<=req.max)?'y':'n';
+    return 'u';
+  };
+  const REQRESULT = idx.map(i=>{
+    return REQUIREMENTS.map(req=>{
+      let s=passOne(req, figFor(req,i));
+      if(req.basisGate && s==='y'){
+        const soh=CYCSOH[i], dod=DOD[i];
+        // basis ok only if SOH matches; DoD accepted if stated 100 OR not contradicting
+        const sohOk = soh===BASIS.soh;
+        const dodOk = (dod===null) || (dod===BASIS.dod);
+        if(!(sohOk&&dodOk)) s='f'; // flagged off-basis
+      }
+      return s;
+    });
+  });
+  /* How far below a 'min' target a value sits, as a fraction (0 = at target).
+     Lets us treat "8000 vs 9000 target, correct basis" as a shortfall to
+     negotiate (partial), not an outright fail — while a wrong-basis or
+     truly deficient figure still fails. */
+  const shortfallOf=(req,i)=>{
+    if(req.type!=='min') return 0;
+    const v=figFor(req,i); if(v===null||isNaN(v)) return null;
+    return v>=req.min?0:(req.min-v)/req.min;
+  };
+  const VERDICT = idx.map(i=>{
+    const st=REQRESULT[i];
+    const reqSt = st.filter((s,k)=>REQUIREMENTS[k].req);
+    let hardFail=false, met=0, flagged=0, known=0;
+    st.forEach((s,k)=>{
+      if(!REQUIREMENTS[k].req) return;
+      if(s==='y'){met++;known++;}
+      else if(s==='f'){flagged++;known++;}          // off-basis figure
+      else if(s==='u'){/* not stated */}
+      else if(s==='n'){
+        known++;
+        const sf=shortfallOf(REQUIREMENTS[k],i);
+        // >10% below a min target, or a range miss, is a real fail.
+        if(sf===null || sf>0.10 || REQUIREMENTS[k].type==='range') hardFail=true;
+        else met+=0; // small shortfall: counts as not-met but not a hard fail
+      }
+    });
+    let v;
+    if(known===0) v='unknown';
+    else if(hardFail) v='fail';
+    else if(met===reqSt.length) v='pass';
+    else v='partial';
+    return {v, met, total:reqSt.length, flagged, known};
+  });
+
+  /* data completeness: scored params present + awaited dims (none present yet) */
+  const scoredDims=6, totalDims=scoredDims+AWAITED.length;
+  const COMPLETE = idx.map(i=>{
+    const present = scoredDims - MISSING[i].length; // rte etc counted via missing labels? keep simple
+    return Math.round((present/totalDims)*100);
+  });
+
+  /* gaps list per supplier (missing scored + all awaited) */
+  const GAPS = idx.map(i=> MISSING[i].concat(AWAITED));
+
+  /* TIER assignment */
+  const TIER = idx.map(i=>{
+    const v=VERDICT[i].v, c=COMPOSITE[i];
+    if(c===null) return 'T3';
+    if(v==='fail') return 'T3';
+    if(v==='pass' && c>=70) return 'T1';
+    if((v==='pass'||v==='partial') && c>=52) return 'T2';
+    return 'T3';
+  });
+
+  return {MODEL,CYCLE,CYCSOH,DOD,CERT,IR,GRAV,VOL,PRICE,RTE,LEGAL,SVC,
+          COMPOSITE,MISSING,REQRESULT,VERDICT,COMPLETE,GAPS,TIER};
+}
+
+/* ---------- why-line generator ---------- */
+function whyLine(S,i){
+  const bits=[];
+  if(S.CYCLE[i]!=null) bits.push(`${S.CYCLE[i].toLocaleString()} cyc${S.CYCSOH[i]?'@'+S.CYCSOH[i]+'%':''}`);
+  bits.push(`${S.CERT[i]} cert${S.CERT[i]===1?'':'s'}`);
+  if(S.SVC[i]!=null) bits.push(`${S.SVC[i]} yr service life`);
+  const v=S.VERDICT[i];
+  let head = v.v==='pass' ? "Meets all requirements" :
+             v.v==='fail' ? "Fails a mandatory requirement" :
+             v.v==='partial' ? "Meets some requirements; rest off-basis or missing" :
+             "Insufficient data to qualify";
+  return `${head}. ${bits.join(' · ')}. Awaiting temp/efficiency data.`;
+}
+/* Legal status -> short chip label + color class */
+function legalChip(txt){
+  const t=(txt||'').toLowerCase();
+  if(!t) return null;
+  if(t.includes('reject')) return {l:'Rejected', c:'lg-bad'};
+  if(t.includes('msa')||t.includes('mou')) return {l:txt.replace(/\s*-.*/,'').trim()+' ✓', c:'lg-good'};
+  if(t.includes('nda')) return {l:'NDA signed', c:'lg-good'};
+  if(t.includes('under review')) return {l:'Under review', c:'lg-mid'};
+  if(t.includes('not required')) return {l:'N/A', c:'lg-neutral'};
+  return {l:txt.slice(0,18), c:'lg-neutral'};
+}
+
+/* ---------- temperature / curve data ---------- */
+const TCHART_PALETTE = ["#5FD0FF","#3DDC84","#FFB13C","#FF5D73","#C86BFF","#4DE3C8","#FFD166","#8B7FFF","#06D6A0","#F78C6B","#9FE1CB"];
+let tempCharts = {};
+
+/* Chart specs: each pulls rows whose param matches `match` and whose
+   category matches `cat`, extracting the numeric x (temp or cycle) from
+   the param text. Curves render as line charts; single points fall back
+   to the matrix. Data is read live from ROWS, so charts populate the
+   moment the supplier template is pasted into the sheet. */
+const TEMP_SPECS = [
+  {key:"rte",  title:"Round-trip efficiency vs temperature", cond:"0.5C · 100% DoD", cat:"efficiency vs temp", xlabel:"Temp (°C)", ylabel:"RTE (%)", xfrom:"temp"},
+  {key:"cap",  title:"Capacity retention vs temperature",    cond:"0.5C dis · vs 25°C", cat:"capacity vs temp", xlabel:"Temp (°C)", ylabel:"Retention (%)", xfrom:"temp"},
+  {key:"pwrd", title:"Continuous discharge power vs temperature", cond:"cont · to cutoff", cat:"power vs temp", match:"discharge power", xlabel:"Temp (°C)", ylabel:"Power (kW)", xfrom:"temp"},
+  {key:"soh",  title:"SOH degradation curve (year-wise)", cond:"2 cyc/day · 100% DoD · 0.5P · 25°C", cat:"soh degradation", xlabel:"Year", ylabel:"SOH (%)", xfrom:"years", eol:70},
+];
+
+function numFromParam(param, mode){
+  if(mode==="cycles"){ const m=param.match(/([\d,]+)\s*cycles?/i); return m?parseFloat(m[1].replace(/,/g,'')):null; }
+  if(mode==="years"){ const m=param.match(/year\s*(\d+)/i); return m?parseFloat(m[1]):null; }
+  // temp: capture signed number before °C / C
+  const m=param.match(/(-?\d+)\s*°?\s*C/i); return m?parseFloat(m[1]):null;
+}
+/* Collect the rows for a spec, sorted by x. Returns {xs, series:[{name,color,points}]} or null. */
+function collectCurve(spec){
+  const rows=ROWS.filter(r=>{
+    const c=(r.cat||'').toLowerCase(), p=(r.param||'').toLowerCase();
+    if(!c.includes(spec.cat)) return false;
+    if(spec.match && !p.includes(spec.match)) return false;
+    return true;
+  });
+  if(!rows.length) return null;
+  const pts=rows.map(r=>({x:numFromParam(r.param, spec.xfrom), row:r})).filter(o=>o.x!==null)
+    .sort((a,b)=>a.x-b.x);
+  if(!pts.length) return null;
+  const xs=pts.map(o=>o.x);
+  let anyData=false;
+  const series=MFRS.map((m,i)=>{
+    const points=pts.map(o=>{ const v=firstFloat((o.row.v[i]||'').toString()); if(v!==null&&!isNaN(v)) anyData=true; return v; });
+    return {name:m, color:TCHART_PALETTE[i%TCHART_PALETTE.length], points};
+  });
+  return anyData ? {xs, series} : {xs, series, empty:true};
+}
+
+function renderTemp(S){
+  const grid=document.getElementById('chartgrid');
+  const note=document.getElementById('temp-note');
+  const emptyBox=document.getElementById('temp-empty');
+  Object.values(tempCharts).forEach(c=>{try{c.destroy();}catch(e){}}); tempCharts={};
+  grid.innerHTML='';
+
+  const collected = TEMP_SPECS.map(s=>({spec:s, data:collectCurve(s)}));
+  const withData = collected.filter(c=>c.data && !c.data.empty);
+  const rowsPresent = collected.some(c=>c.data);
+
+  if(!rowsPresent){
+    // No temperature rows in the sheet at all — show the guidance banner.
+    emptyBox.style.display='block';
+    emptyBox.innerHTML = `<b>No temperature / degradation data in the sheet yet.</b><br>`+
+      `Send suppliers the data-request template, then paste their returns as new rows `+
+      `(categories: Efficiency vs Temp, Capacity vs Temp, Power vs Temp, SOH Degradation — year-wise). `+
+      `These charts populate automatically — one line per supplier — the moment values arrive.`;
+    note.textContent='awaiting supplier submissions';
+    return;
+  }
+  emptyBox.style.display='none';
+  note.textContent = `${withData.length} of ${TEMP_SPECS.length} curves have data`;
+
+  collected.forEach(({spec, data})=>{
+    const card=document.createElement('div'); card.className='chartcard';
+    if(!data || data.empty){
+      card.className='chartcard awaiting';
+      card.innerHTML=`<h3>${spec.title}</h3><div class="ic">⧗</div>`+
+        `<div class="msg">Awaiting supplier data.<br>Add rows under “${spec.cat}” to populate.</div>`;
+      grid.appendChild(card); return;
+    }
+    if(typeof Chart==='undefined'){
+      card.className='chartcard awaiting';
+      card.innerHTML=`<h3>${spec.title}</h3><div class="ic">⚠</div>`+
+        `<div class="msg">Chart library didn’t load.<br>Check the internet connection and refresh.</div>`;
+      grid.appendChild(card); return;
+    }
+    card.innerHTML=`<h3>${spec.title}</h3><div class="cond">${spec.cond}</div><div style="height:220px"><canvas></canvas></div>`;
+    grid.appendChild(card);
+    const ctx=card.querySelector('canvas');
+    const ds=data.series.filter(s=>s.points.some(p=>p!==null&&!isNaN(p))).map(s=>({
+      label:s.name, data:s.points, borderColor:s.color, backgroundColor:s.color,
+      borderWidth:2, pointRadius:2.5, pointHoverRadius:4, tension:0.3, spanGaps:true
+    }));
+    // 70% end-of-life reference line (SOH chart only)
+    if(spec.eol){
+      ds.push({
+        label:`${spec.eol}% end of life`, data:data.xs.map(()=>spec.eol),
+        borderColor:'#FF5D73', borderWidth:1.5, borderDash:[6,4],
+        pointRadius:0, pointHoverRadius:0, tension:0, fill:false
+      });
+    }
+    const xfmt = x => spec.xfrom==='cycles' ? x.toLocaleString()
+                    : spec.xfrom==='years'  ? 'Y'+x
+                    : x+'°';
+    try{
+    tempCharts[spec.key]=new Chart(ctx,{
+      type:'line',
+      data:{ labels:data.xs.map(xfmt), datasets:ds },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'nearest',intersect:false},
+        plugins:{ legend:{labels:{color:'#8496A8',font:{size:9,family:'IBM Plex Mono'},boxWidth:10,padding:6}} },
+        scales:{
+          x:{ title:{display:true,text:spec.xlabel,color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'} },
+          y:{ title:{display:true,text:spec.ylabel,color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'} }
+        }
+      }
+    });
+    }catch(e){
+      card.className='chartcard awaiting';
+      card.innerHTML=`<h3>${spec.title}</h3><div class="ic">⚠</div><div class="msg">Couldn’t draw this chart.</div>`;
+    }
+  });
+}
+
+/* ---------- power derating (temp × SOC, SOC-selectable line chart) ---------- */
+let derateState = { dir:'Discharge', soc:null };
+let derateChart = null;
+
+/* Parse rows like: "Dis power @ -30--25°C @ [0,20%)".
+   Returns {dirs:Set, socs:[...], byKey: {dir||soc: [{temp, row}]}} */
+function parseDerating(){
+  const rows = ROWS.filter(r=>(r.cat||'').toLowerCase().includes('derating'));
+  if(!rows.length) return null;
+  const socs=[], byKey={};
+  rows.forEach(r=>{
+    const p=r.param;
+    const dir = /dis/i.test(p) ? 'Discharge' : 'Charge';
+    const tm = p.match(/(-?\d+)\s*-\s*(-?\d+)\s*°?C/);   // "-30--25°C" or "20-25°C"
+    const sm = p.match(/(\[[\d.,%\s]*[\])])/);           // "[40,60%)" or "[80,100%]"
+    if(!tm || !sm) return;
+    const temp = parseFloat(tm[1]);
+    const soc = sm[1];
+    if(!socs.includes(soc)) socs.push(soc);
+    const key = dir+'||'+soc;
+    (byKey[key]=byKey[key]||[]).push({temp, row:r});
+  });
+  Object.values(byKey).forEach(a=>a.sort((x,y)=>x.temp-y.temp));
+  // order SOC bands naturally by their first number
+  socs.sort((a,b)=>parseFloat(a.replace(/[^\d.-]/g,''))-parseFloat(b.replace(/[^\d.-]/g,'')));
+  return { socs, byKey };
+}
+
+function pRate(str){ const m=(str||'').match(/([\d.]+)\s*P?/i); return m?parseFloat(m[1]):null; }
+
+function renderDerating(){
+  const D = parseDerating();
+  const wrap=document.getElementById('derating-wrap');
+  const note=document.getElementById('derate-note');
+  const ctrls=document.getElementById('derate-controls');
+  const emptyBox=document.getElementById('derate-empty');
+  const card=document.getElementById('derate-card');
+
+  if(!D){
+    ctrls.style.display='none'; card.style.display='none';
+    emptyBox.style.display='block';
+    emptyBox.innerHTML=`<b>No power-derating data in the sheet yet.</b><br>`+
+      `Send suppliers the power-derating template (one tab each, charge + discharge grids). `+
+      `Paste their grids back as rows under category “Discharge Derating” / “Charge Derating” and this chart populates — one line per supplier, switchable by SOC band.`;
+    note.textContent='awaiting supplier submissions';
+    return;
+  }
+  emptyBox.style.display='none'; ctrls.style.display='flex'; card.style.display='block';
+  if(!derateState.soc || !D.socs.includes(derateState.soc)){
+    // default to a mid SOC band if present
+    derateState.soc = D.socs[Math.floor(D.socs.length/2)] || D.socs[0];
+  }
+
+  // build direction segmented control
+  const dirSeg=document.getElementById('derate-dir');
+  const dirs=['Discharge','Charge'].filter(d=>Object.keys(D.byKey).some(k=>k.startsWith(d+'||')));
+  if(!dirs.includes(derateState.dir)) derateState.dir=dirs[0];
+  dirSeg.innerHTML='';
+  dirs.forEach(d=>{
+    const b=document.createElement('button'); b.textContent=d;
+    if(d===derateState.dir) b.classList.add('on');
+    b.onclick=()=>{derateState.dir=d; renderDerating();};
+    dirSeg.appendChild(b);
+  });
+  // build SOC segmented control
+  const socSeg=document.getElementById('derate-soc');
+  socSeg.innerHTML='';
+  D.socs.forEach(s=>{
+    const b=document.createElement('button'); b.textContent=s;
+    if(s===derateState.soc) b.classList.add('on');
+    b.onclick=()=>{derateState.soc=s; renderDerating();};
+    socSeg.appendChild(b);
+  });
+
+  const key=derateState.dir+'||'+derateState.soc;
+  const pts=D.byKey[key]||[];
+  document.getElementById('derate-title').textContent=`${derateState.dir} power vs temperature`;
+  document.getElementById('derate-cond').textContent=`SOC ${derateState.soc} · rate in P · SP 1004.8 Wh`;
+  note.textContent=`${derateState.dir.toLowerCase()} · ${D.socs.length} SOC bands available`;
+
+  if(typeof Chart==='undefined'){ return; }
+  const xs=pts.map(o=>o.temp);
+  const ds=MFRS.map((m,i)=>({
+    label:m, borderColor:TCHART_PALETTE[i%TCHART_PALETTE.length], backgroundColor:TCHART_PALETTE[i%TCHART_PALETTE.length],
+    data:pts.map(o=>pRate((o.row.v[i]||'').toString())), borderWidth:2, pointRadius:2.5, pointHoverRadius:4, tension:0.25, spanGaps:true, stepped:false
+  })).filter(d=>d.data.some(v=>v!==null&&!isNaN(v)));
+
+  if(derateChart){try{derateChart.destroy();}catch(e){}}
+  const ctx=document.getElementById('derate-canvas');
+  derateChart=new Chart(ctx,{
+    type:'line',
+    data:{ labels:xs.map(x=>x+'°'), datasets:ds },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'nearest',intersect:false},
+      plugins:{ legend:{labels:{color:'#8496A8',font:{size:9,family:'IBM Plex Mono'},boxWidth:10,padding:6}} },
+      scales:{
+        x:{ title:{display:true,text:'Temperature (°C)',color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'} },
+        y:{ title:{display:true,text:'Max rate (P)',color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'}, beginAtZero:true }
+      }
+    }
+  });
+}
+
+/* ---------- render ---------- */
+function render(){
+  const S=compute();
+  const N=MFRS.length;
+  const idx=[...Array(N).keys()];
+
+  document.getElementById('hero-sub').textContent =
+    `314Ah LFP Prismatic · ${N} suppliers · ranked on agreed basis`;
+
+  /* ladder */
+  const tiers={T1:[],T2:[],T3:[]};
+  idx.forEach(i=>tiers[S.TIER[i]].push(i));
+  Object.keys(tiers).forEach(t=>tiers[t].sort((a,b)=>(S.COMPOSITE[b]??-1)-(S.COMPOSITE[a]??-1)));
+
+  const meta={
+    T1:{title:"Tier 1 — Preferred",desc:"Meets every requirement on basis · composite ≥ 70"},
+    T2:{title:"Tier 2 — Qualified, pending data",desc:"Meets requirements or short only on unsupplied data · composite 52–69"},
+    T3:{title:"Tier 3 — Not qualified / insufficient data",desc:"Fails a requirement or too much critical data missing"},
+  };
+  const ladder=document.getElementById('ladder');
+  ladder.innerHTML='';
+  ['T1','T2','T3'].forEach(t=>{
+    const wrap=document.createElement('div');
+    wrap.className='tier '+t.toLowerCase();
+    const list=tiers[t];
+    wrap.innerHTML=`
+      <div class="tier-head">
+        <div class="tier-badge">${t}</div>
+        <div>
+          <div class="tier-title">${meta[t].title}</div>
+          <div class="tier-desc">${meta[t].desc}</div>
+        </div>
+        <div class="tier-count">${list.length} cell${list.length===1?'':'s'}</div>
+      </div>`;
+    if(!list.length){
+      const e=document.createElement('div'); e.className='tier-body empty';
+      e.textContent='No cells in this tier on current data.';
+      wrap.appendChild(e);
+    }else{
+      const body=document.createElement('div'); body.className='tier-body';
+      list.forEach((i,rank)=>{
+        const comp=S.COMPOSITE[i];
+        const cl = comp>=75?'hi':comp>=55?'mid':'lo';
+        const gapsShown=S.GAPS[i].slice(0,4);
+        const card=document.createElement('div'); card.className='scard';
+        card.innerHTML=`
+          <div class="rank">#${rank+1}</div>
+          <div class="nm">${MFRS[i]}</div>
+          <div class="md">${S.MODEL[i]||'model n/a'}</div>
+          <div class="scorewrap"><span class="score">${comp??'—'}</span><span class="score-l">/100 composite</span></div>
+          <span class="verdict ${S.VERDICT[i].v}">${S.VERDICT[i].v.toUpperCase()} · ${S.VERDICT[i].met}/${S.VERDICT[i].total} req</span>
+          ${(()=>{const lc=legalChip(S.LEGAL[i]); return lc?`<span class="legal ${lc.c}">Legal: ${lc.l}</span>`:'';})()}
+          <div class="cbar">
+            <div class="lbl"><span>Data completeness</span><span>${S.COMPLETE[i]}%</span></div>
+            <div class="track"><div class="fill ${S.COMPLETE[i]>=66?'hi':S.COMPLETE[i]>=40?'mid':'lo'}" style="width:${S.COMPLETE[i]}%"></div></div>
+          </div>
+          <div class="why">${whyLine(S,i)}</div>
+          <div class="gaps">${gapsShown.map(g=>`<span class="g">${g}</span>`).join('')}${S.GAPS[i].length>4?`<span class="g">+${S.GAPS[i].length-4}</span>`:''}</div>
+        `;
+        body.appendChild(card);
+      });
+      wrap.appendChild(body);
+    }
+    ladder.appendChild(wrap);
+  });
+
+  document.getElementById('ladder-note').textContent =
+    `${tiers.T1.length} T1 · ${tiers.T2.length} T2 · ${tiers.T3.length} T3`;
+
+  /* weights */
+  const w=document.getElementById('weights');
+  w.innerHTML='';
+  Object.keys(WEIGHTS).forEach(k=>{
+    const pct=Math.round(WEIGHTS[k]*100);
+    const d=document.createElement('div'); d.className='wt';
+    d.innerHTML=`<span class="wn">${WLABELS[k]}</span>
+      <span class="wtrack"><span class="wfill" style="width:${pct*2.4}px"></span></span>
+      <span class="wv">${pct}%</span>`;
+    w.appendChild(d);
+  });
+
+  /* matrix */
+  renderTemp(S);
+  renderDerating();
+  renderMatrix(S);
+
+  /* footer */
+  document.getElementById('foot-count').textContent =
+    `${N} suppliers · ${ROWS.length} parameters · ${new Set(ROWS.map(r=>r.cat)).size} categories`;
+  document.getElementById('foot-src').textContent =
+    dataSource==='live' ? 'Live — synced from connected sheet' : 'Static snapshot — set CONFIG.CSV_URL to go live';
+}
+
+/* requirement lookup for matrix highlighting */
+function reqForRow(param){
+  const p=param.toLowerCase();
+  return REQUIREMENTS.find(r=>r.keywords.some(k=>p.includes(k)));
+}
+function bestIndex(row){
+  // numeric best: higher better except IR/price/weight
+  const p=row.param.toLowerCase();
+  const lowerBetter = p.includes('resistance')||p.includes('price')||p.includes('weight');
+  const isCycle = p.includes('cycle life');
+  let vals=row.v.map(x=> isCycle?cycleLifeOf(x||''):firstFloat(x||''));
+  const valid=vals.map((v,i)=>({v,i})).filter(o=>o.v!=null&&!isNaN(o.v));
+  if(valid.length<2) return -1;
+  valid.sort((a,b)=> lowerBetter? a.v-b.v : b.v-a.v);
+  return valid[0].i;
+}
+
+let CATS=[];
+function renderMatrix(S){
+  const head=document.getElementById('mhead');
+  head.innerHTML=`<th style="width:96px;">Category</th><th style="width:190px;">Parameter</th>${MFRS.map(m=>`<th class="mfr">${m}</th>`).join('')}<th style="width:210px;">Remarks</th>`;
+
+  CATS=["All",...new Set(ROWS.map(r=>r.cat))];
+  const chips=document.getElementById('chips');
+  chips.innerHTML='';
+  CATS.forEach(c=>{
+    const b=document.createElement('button');
+    b.textContent=c; if(c===activeCat)b.classList.add('on');
+    b.onclick=()=>{activeCat=c;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderMatrix(S);};
+    chips.appendChild(b);
+  });
+
+  const body=document.getElementById('mbody');
+  body.innerHTML='';
+  const cycleRow=findRowAny('cycle life');
+  ROWS.filter(r=>activeCat==="All"||r.cat===activeCat).forEach(r=>{
+    const req=reqForRow(r.param);
+    const best=bestIndex(r);
+    const tr=document.createElement('tr');
+    let cells=`
+      <td class="cat">${r.cat}</td>
+      <td class="param">${r.param}${r.unit!=="-"?` <span class="u">(${r.unit})</span>`:''}${req?`<span class="reqtag">REQ ${req.cond}</span>`:''}</td>`;
+    r.v.forEach((v,i)=>{
+      const val=(v||'').trim();
+      const empty = val===''||val==='-'||val==='—';
+      let cls='val';
+      if(empty) cls+=' miss';
+      if(i===best && !empty) cls+=' best';
+      // basis flag on cycle life
+      let flag=false;
+      if(cycleRow && r.param.toLowerCase().includes('cycle life') && !empty){
+        const soh=sohOf(val);
+        const gate=REQUIREMENTS.find(q=>q.basisGate);
+        if(gate){ const num=cycleLifeOf(val); if(num!=null && soh!==BASIS.soh) flag=true; }
+      }
+      if(flag) cls+=' flag';
+      cells+=`<td class="${cls}">${empty?'—':`<span class="v">${val}</span>`}</td>`;
+    });
+    cells+=`<td class="remark">${r.remark||'—'}</td>`;
+    tr.innerHTML=cells;
+    body.appendChild(tr);
+  });
+}
+
+/* ---------- load ---------- */
+function setSync(state,msg){
+  document.getElementById('dot').className='dot'+(state==='live'?' live':state==='err'?' err':'');
+  document.getElementById('syncmsg').textContent=msg;
+}
+function parseSheet(csv){
+  const parsed=Papa.parse(csv.trim(),{skipEmptyLines:true});
+  const rows=parsed.data, norm=s=>(s||'').toString().trim(), lower=s=>norm(s).toLowerCase();
+  const hi=rows.findIndex(r=>r.some(c=>lower(c)==='category')&&r.some(c=>lower(c)==='parameter'));
+  if(hi===-1) throw new Error("no header row");
+  const h=rows[hi];
+  const catI=h.findIndex(c=>lower(c)==='category'), paramI=h.findIndex(c=>lower(c)==='parameter'),
+        unitI=h.findIndex(c=>lower(c)==='unit'), remI=h.findIndex(c=>lower(c)==='remarks');
+  const excl=new Set([catI,paramI,unitI,remI].filter(i=>i>-1));
+  const last=remI>-1?remI:h.length, cols=[];
+  for(let i=0;i<h.length;i++){ if(excl.has(i)||i<paramI||i>=last) continue; if(norm(h[i])===''||lower(h[i])==='sr no') continue; cols.push(i); }
+  const mfrs=cols.map(i=>norm(h[i])), out=[];
+  for(let r=hi+1;r<rows.length;r++){ const row=rows[r], p=norm(row[paramI]); if(!p) continue;
+    out.push({cat:norm(row[catI])||'General',param:p,unit:unitI>-1?(norm(row[unitI])||'-'):'-',v:cols.map(i=>norm(row[i])),remark:remI>-1?norm(row[remI]):''}); }
+  if(!out.length) throw new Error("no data rows");
+  return {mfrs,rows:out};
+}
+async function loadData(manual){
+  if(!CONFIG.CSV_URL){ dataSource='fallback'; setSync('idle','Not connected — bundled snapshot'); render(); return; }
+  setSync('idle',manual?'Refreshing…':'Loading…');
+  try{
+    const bust=(CONFIG.CSV_URL.includes('?')?'&':'?')+'cb='+Date.now();
+    const res=await fetch(CONFIG.CSV_URL+bust,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const {mfrs,rows}=parseSheet(await res.text());
+    MFRS=mfrs; ROWS=rows; dataSource='live';
+    setSync('live',`Live — synced ${new Date().toLocaleTimeString()}`); render();
+  }catch(e){
+    dataSource=(MFRS&&MFRS.length)?dataSource:'fallback';
+    setSync('err',`Couldn't load live data (${e.message}) — showing snapshot`); render();
+  }
+}
+loadData(false);
+if(CONFIG.AUTO_REFRESH_MINUTES>0) setInterval(()=>loadData(false),CONFIG.AUTO_REFRESH_MINUTES*60*1000);
+</script>
+</body>
+</html>
