@@ -277,6 +277,27 @@
     </div>
   </div>
 
+  <!-- ===== DCR MAP (SOC on X, temp-selectable) ===== -->
+  <div id="dcr-wrap">
+    <div class="sec">
+      <span class="k">03b</span><h2>DC resistance (DCR) map</h2>
+      <span class="rule"></span>
+      <span class="note" id="dcr-note"></span>
+    </div>
+    <div class="derate-controls" id="dcr-controls" style="display:none">
+      <span class="dc-lbl">Direction</span>
+      <div class="seg" id="dcr-dir"></div>
+      <span class="dc-lbl">Temperature</span>
+      <div class="seg" id="dcr-temp"></div>
+    </div>
+    <div id="dcr-empty" class="temp-empty" style="display:none"></div>
+    <div class="chartcard" id="dcr-card" style="display:none">
+      <h3 id="dcr-title">Discharge DCR vs SOC</h3>
+      <div class="cond" id="dcr-cond"></div>
+      <div style="height:280px"><canvas id="dcr-canvas"></canvas></div>
+    </div>
+  </div>
+
   <!-- ===== METHOD ===== -->
   <div class="sec">
     <span class="k">04</span><h2>How the tiers are decided</h2><span class="rule"></span>
@@ -319,9 +340,9 @@
 /* =======================================================================
    CONFIG — reads the SAME sheet as the main dashboard.
    ======================================================================= */
-const CONFIG = { CSV_URL: "cells.csv", POWERMAP_CSV_URL: "powermaps.csv", AUTO_REFRESH_MINUTES: 5 };
-/* powermaps.csv is the long-format export of the PM_* grid tabs:
-   columns: Supplier,Direction,SOC,TempLabel,TempLow,Value  (Value in P; 0 = not allowed) */
+const CONFIG = { CSV_URL: "cells.csv", POWERMAP_CSV_URL: "powermaps.csv", DCR_CSV_URL: "dcr.csv", AUTO_REFRESH_MINUTES: 5 };
+/* dcr.csv is the long-format export of the DCR_* grid tabs:
+   columns: Supplier,Direction,SOC,TempLabel,TempC,DCR_mOhm */
 
 /* Agreed comparison basis (must match the tender). */
 const BASIS = { soh:70, dod:100, rate:"0.5C", temp:"25±2°C" };
@@ -417,6 +438,9 @@ const FALLBACK_ROWS = [
 
 const FALLBACK_POWERMAP = {"COSPOWER": null, "EVE": {"charge": {"soc": ["0-10%", "10-20%", "20-30%", "30-40%", "40-50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-95%", "95-100%"], "temps": [{"label": "T≤0", "low": 0.0}, {"label": "0<T≤5", "low": 0.0}, {"label": "5<T≤10", "low": 5.0}, {"label": "10<T≤15", "low": 10.0}, {"label": "15<T≤20", "low": 15.0}, {"label": "20<T≤25", "low": 20.0}, {"label": "25<T≤30", "low": 25.0}, {"label": "30<T≤35", "low": 30.0}, {"label": "35<T≤40", "low": 35.0}, {"label": "40<T≤45", "low": 40.0}, {"label": "45<T≤50", "low": 45.0}, {"label": "50<T≤55", "low": 50.0}, {"label": "55<T≤60", "low": 55.0}], "bands": {"0-10%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "10-20%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "20-30%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "30-40%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "40-50%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "50-60%": {"T≤0": 0.0, "0<T≤5": 0.2, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "60-70%": {"T≤0": 0.0, "0<T≤5": 0.15, "5<T≤10": 0.3, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "70-80%": {"T≤0": 0.0, "0<T≤5": 0.1, "5<T≤10": 0.2, "10<T≤15": 0.3, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "80-90%": {"T≤0": 0.0, "0<T≤5": 0.1, "5<T≤10": 0.2, "10<T≤15": 0.3, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "90-95%": {"T≤0": 0.0, "0<T≤5": 0.05, "5<T≤10": 0.15, "10<T≤15": 0.25, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "95-100%": {"T≤0": 0.0, "0<T≤5": 0.05, "5<T≤10": 0.1, "10<T≤15": 0.2, "15<T≤20": 0.4, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}}}, "discharge": {"soc": ["0-10%", "10-20%", "20-30%", "30-40%", "40-50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"], "temps": [{"label": "-30≤T<-25", "low": -30.0}, {"label": "-25≤T<-20", "low": -25.0}, {"label": "-20≤T<-15", "low": -20.0}, {"label": "-15≤T<-10", "low": -15.0}, {"label": "-10≤T<-5", "low": -10.0}, {"label": "-5≤T<0", "low": -5.0}, {"label": "0≤T<5", "low": 0.0}, {"label": "5<T≤10", "low": 5.0}, {"label": "10<T≤15", "low": 10.0}, {"label": "15<T≤20", "low": 15.0}, {"label": "20<T≤25", "low": 20.0}, {"label": "25<T≤30", "low": 25.0}, {"label": "30<T≤35", "low": 30.0}, {"label": "35<T≤40", "low": 35.0}, {"label": "40<T≤45", "low": 40.0}, {"label": "45<T≤50", "low": 45.0}, {"label": "50<T≤55", "low": 50.0}, {"label": "55<T≤60", "low": 55.0}], "bands": {"0-10%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "10-20%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "20-30%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "30-40%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "40-50%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "50-60%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "60-70%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "70-80%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "80-90%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}, "90-100%": {"-30≤T<-25": 0.5, "-25≤T<-20": 0.5, "-20≤T<-15": 0.5, "-15≤T<-10": 0.5, "-10≤T<-5": 0.5, "-5≤T<0": 0.5, "0≤T<5": 0.5, "5<T≤10": 0.5, "10<T≤15": 0.5, "15<T≤20": 0.5, "20<T≤25": 0.5, "25<T≤30": 0.5, "30<T≤35": 0.5, "35<T≤40": 0.5, "40<T≤45": 0.5, "45<T≤50": 0.5, "50<T≤55": 0.5, "55<T≤60": 0.5}}}}, "HITHIUM": null, "YOUNGY ENERGY": null, "GREAT POWER": null, "CORNEX": null, "Tianneng Energy": null, "REPT": null, "NETC": null, "CNET - Lishen": null, "Gotion": null};
 let POWERMAP = JSON.parse(JSON.stringify(FALLBACK_POWERMAP));
+const FALLBACK_DCR = {"COSPOWER": null, "EVE": null, "HITHIUM": {"discharge": {"soc": ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"], "temps": [{"label": "-20°C", "c": -20.0}, {"label": "-10°C", "c": -10.0}, {"label": "0°C", "c": 0.0}, {"label": "25°C", "c": 25.0}, {"label": "45°C", "c": 45.0}], "bands": {"10%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.514, "45°C": null}, "20%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4723, "45°C": null}, "30%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4608, "45°C": null}, "40%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4443, "45°C": null}, "50%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4287, "45°C": null}, "60%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4822, "45°C": null}, "70%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4637, "45°C": null}, "80%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.443, "45°C": null}, "90%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4194, "45°C": null}}}, "charge": {"soc": ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%"], "temps": [{"label": "-20°C", "c": -20.0}, {"label": "-10°C", "c": -10.0}, {"label": "0°C", "c": 0.0}, {"label": "25°C", "c": 25.0}, {"label": "45°C", "c": 45.0}], "bands": {"10%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.451, "45°C": null}, "20%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4478, "45°C": null}, "30%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4392, "45°C": null}, "40%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4468, "45°C": null}, "50%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4592, "45°C": null}, "60%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4927, "45°C": null}, "70%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4424, "45°C": null}, "80%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4433, "45°C": null}, "90%": {"-20°C": null, "-10°C": null, "0°C": null, "25°C": 0.4452, "45°C": null}}}}, "YOUNGY ENERGY": null, "GREAT POWER": null, "CORNEX": null, "Tianneng Energy": null, "REPT": null, "NETC": null, "CNET - Lishen": null, "Gotion": null};
+let DCR = JSON.parse(JSON.stringify(FALLBACK_DCR));
+let dcrState = { dir:'Discharge', temp:null };
 let MFRS = FALLBACK_MFRS.slice();
 let ROWS = FALLBACK_ROWS.slice();
 let dataSource = "fallback";
@@ -847,6 +871,97 @@ function renderDerating(){
   });
 }
 
+/* ---------- DCR map (SOC on X, one line per supplier, temp-selectable) ---------- */
+function dcrDirKey(d){ return d.toLowerCase()==='charge'?'charge':'discharge'; }
+
+function buildDCR(){
+  const dk=dcrDirKey(dcrState.dir);
+  const suppliers=MFRS.filter(m=>DCR[m]&&DCR[m][dk]);
+  if(!suppliers.length) return null;
+  const socOrder=[], seen=new Set();
+  const tempMap=new Map();
+  suppliers.forEach(m=>{
+    const g=DCR[m][dk];
+    g.soc.forEach(s=>{ if(!seen.has(s)){seen.add(s);socOrder.push(s);} });
+    g.temps.forEach(t=>{ if(!tempMap.has(t.label)) tempMap.set(t.label, t.c); });
+  });
+  socOrder.sort((a,b)=>parseFloat(a)-parseFloat(b));
+  const temps=[...tempMap.entries()].map(([label,c])=>({label,c}))
+             .sort((a,b)=>(a.c??0)-(b.c??0));
+  return { suppliers, socs:socOrder, temps, dk };
+}
+
+function renderDCR(){
+  const note=document.getElementById('dcr-note');
+  const ctrls=document.getElementById('dcr-controls');
+  const emptyBox=document.getElementById('dcr-empty');
+  const card=document.getElementById('dcr-card');
+  const dirSeg=document.getElementById('dcr-dir');
+
+  const anyD = MFRS.some(m=>DCR[m]&&DCR[m].discharge);
+  const anyC = MFRS.some(m=>DCR[m]&&DCR[m].charge);
+  // a direction "exists" only if at least one supplier has a real value in it
+  const hasVals=(dk)=>MFRS.some(m=>{const g=DCR[m]&&DCR[m][dk]; if(!g)return false;
+    return Object.values(g.bands).some(band=>Object.values(band).some(v=>v!==null&&v!==''&&!isNaN(v)));});
+  const dirs=[]; if(anyD)dirs.push('Discharge'); if(anyC)dirs.push('Charge');
+
+  if(!dirs.length || (!hasVals('discharge')&&!hasVals('charge'))){
+    ctrls.style.display='none'; card.style.display='none'; emptyBox.style.display='block';
+    emptyBox.innerHTML=`<b>No DCR data yet.</b><br>`+
+      `Fill each supplier's <b>DCR_&lt;Supplier&gt;</b> tab (discharge + charge grids, mΩ). `+
+      `This chart plots DCR against SOC — one line per supplier, switchable by direction and temperature.`;
+    note.textContent='awaiting supplier submissions';
+    return;
+  }
+  if(!dirs.includes(dcrState.dir)) dcrState.dir=dirs[0];
+  emptyBox.style.display='none'; ctrls.style.display='flex'; card.style.display='block';
+
+  dirSeg.innerHTML='';
+  dirs.forEach(d=>{ const b=document.createElement('button'); b.textContent=d;
+    if(d===dcrState.dir) b.classList.add('on');
+    b.onclick=()=>{dcrState.dir=d; dcrState.temp=null; renderDCR();}; dirSeg.appendChild(b); });
+
+  const D=buildDCR();
+  const tempSeg=document.getElementById('dcr-temp'); tempSeg.innerHTML='';
+  if(!D){ card.style.display='none'; emptyBox.style.display='block';
+    emptyBox.innerHTML=`<b>No ${dcrState.dir.toLowerCase()} DCR submitted yet.</b>`; return; }
+  // only offer temps that actually have data for at least one supplier
+  const tempsWithData=D.temps.filter(t=>MFRS.some(m=>{const g=DCR[m]&&DCR[m][D.dk]; if(!g)return false;
+    return D.socs.some(s=>g.bands[s]&&g.bands[s][t.label]!=null&&!isNaN(g.bands[s][t.label]));}));
+  const useTemps = tempsWithData.length?tempsWithData:D.temps;
+  if(!dcrState.temp || !useTemps.some(t=>t.label===dcrState.temp))
+    dcrState.temp = (useTemps.find(t=>t.c===25)||useTemps[0]).label;
+  useTemps.forEach(t=>{ const b=document.createElement('button'); b.textContent=t.label;
+    if(t.label===dcrState.temp) b.classList.add('on');
+    b.onclick=()=>{dcrState.temp=t.label; renderDCR();}; tempSeg.appendChild(b); });
+
+  document.getElementById('dcr-title').textContent=`${dcrState.dir} DCR vs SOC`;
+  document.getElementById('dcr-cond').textContent=`Temperature ${dcrState.temp} · resistance in mΩ · lower is better`;
+  const withData=D.suppliers.filter(m=>{const g=DCR[m][D.dk];
+    return D.socs.some(s=>g.bands[s]&&g.bands[s][dcrState.temp]!=null&&!isNaN(g.bands[s][dcrState.temp]));});
+  note.textContent=`${dcrState.dir.toLowerCase()} · ${withData.length} supplier${withData.length===1?'':'s'} @ ${dcrState.temp}`;
+
+  if(typeof Chart==='undefined') return;
+  const xs=D.socs;
+  const ds=MFRS.map((m,i)=>{
+    const g=DCR[m]&&DCR[m][D.dk]; if(!g) return null;
+    const data=D.socs.map(s=> (g.bands[s]&&g.bands[s][dcrState.temp]!=null)? g.bands[s][dcrState.temp] : null);
+    if(!data.some(v=>v!==null&&!isNaN(v))) return null;
+    return { label:m, borderColor:TCHART_PALETTE[i%TCHART_PALETTE.length], backgroundColor:TCHART_PALETTE[i%TCHART_PALETTE.length],
+      data, borderWidth:2, pointRadius:2.5, pointHoverRadius:4, tension:0.25, spanGaps:true };
+  }).filter(Boolean);
+
+  if(window.dcrChart){try{window.dcrChart.destroy();}catch(e){}}
+  window.dcrChart=new Chart(document.getElementById('dcr-canvas'),{
+    type:'line', data:{ labels:xs, datasets:ds },
+    options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'nearest',intersect:false},
+      plugins:{ legend:{labels:{color:'#8496A8',font:{size:9,family:'IBM Plex Mono'},boxWidth:10,padding:6}},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y} mΩ`}} },
+      scales:{ x:{ title:{display:true,text:'SOC',color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'} },
+        y:{ title:{display:true,text:'DCR (mΩ)',color:'#5A6a7a',font:{size:9}}, ticks:{color:'#5A6a7a',font:{size:9}}, grid:{color:'#1E2733'} } } }
+  });
+}
+
 /* ---------- render ---------- */
 function render(){
   const S=compute();
@@ -931,6 +1046,7 @@ function render(){
   /* matrix */
   renderTemp(S);
   renderDerating();
+  renderDCR();
   renderMatrix(S);
 
   /* footer */
@@ -1039,6 +1155,34 @@ function parsePowerMapCSV(csv){
   MFRS.forEach(m=>{ if(!(m in out)) out[m]=null; });
   return out;
 }
+/* Parse long-format DCR CSV into the DCR structure.
+   Headers (case-insensitive): Supplier,Direction,SOC,TempLabel,TempC,DCR_mOhm */
+function parseDCRCSV(csv){
+  const parsed=Papa.parse(csv.trim(),{header:true,skipEmptyLines:true});
+  if(!parsed.data||!parsed.data.length) return null;
+  const key=o=>{const m={};for(const k in o)m[k.trim().toLowerCase()]=o[k];return m;};
+  const out={};
+  parsed.data.forEach(raw=>{
+    const r=key(raw);
+    const sup=(r.supplier||'').trim(); if(!sup) return;
+    const dir=(r.direction||'').trim().toLowerCase();
+    const dk=dir.startsWith('c')?'charge':dir.startsWith('d')?'discharge':null; if(!dk) return;
+    const soc=(r.soc||'').trim(); const tl=(r.templabel||'').trim();
+    if(!soc||!tl) return;
+    const tc=r.tempc!==undefined&&r.tempc!==''?parseFloat(r.tempc):null;
+    let val=(r.dcr_mohm||'').toString().trim();
+    val = val===''? null : parseFloat(val);
+    out[sup]=out[sup]||{};
+    const g=out[sup][dk]=out[sup][dk]||{soc:[],temps:[],bands:{},_ts:new Set()};
+    if(!g.soc.includes(soc)) g.soc.push(soc);
+    if(!g._ts.has(tl)){ g._ts.add(tl); g.temps.push({label:tl,c:isNaN(tc)?null:tc}); }
+    (g.bands[soc]=g.bands[soc]||{})[tl]=val;
+  });
+  Object.values(out).forEach(s=>Object.values(s).forEach(g=>{delete g._ts;
+    g.temps.sort((a,b)=>(a.c??0)-(b.c??0)); g.soc.sort((a,b)=>parseFloat(a)-parseFloat(b));}));
+  MFRS.forEach(m=>{ if(!(m in out)) out[m]=null; });
+  return out;
+}
 function parseSheet(csv){
   const parsed=Papa.parse(csv.trim(),{skipEmptyLines:true});
   const rows=parsed.data, norm=s=>(s||'').toString().trim(), lower=s=>norm(s).toLowerCase();
@@ -1072,6 +1216,13 @@ async function loadData(manual){
         const pres=await fetch(CONFIG.POWERMAP_CSV_URL+pbust,{cache:'no-store'});
         if(pres.ok){ const pm=parsePowerMapCSV(await pres.text()); if(pm) POWERMAP=pm; }
       }catch(_){/* keep fallback powermap */}
+    }
+    if(CONFIG.DCR_CSV_URL){
+      try{
+        const dbust=(CONFIG.DCR_CSV_URL.includes('?')?'&':'?')+'cb='+Date.now();
+        const dres=await fetch(CONFIG.DCR_CSV_URL+dbust,{cache:'no-store'});
+        if(dres.ok){ const dm=parseDCRCSV(await dres.text()); if(dm) DCR=dm; }
+      }catch(_){/* keep fallback DCR */}
     }
     setSync('live',`Live — synced ${new Date().toLocaleTimeString()}`); render();
   }catch(e){
